@@ -9,7 +9,7 @@ import { CHAIN, ADDRESSES, DROP_DEFAULTS, LIMITS } from './config.js'
 import { allLaunches, getLaunch, upsertLaunch } from './store.js'
 import { createVaultWallet } from './vault.js'
 import { normalizeDropConfig, computeSchedule, nextRound, validateSplitConfig } from './schedule.js'
-import { getLaunchFee, readGraduation, readMarketCapUsd, readLaunchedToken, vaultBalances, rememberPool } from './chain.js'
+import { getLaunchFee, readGraduation, readMarketCapUsd, readLaunchedToken, readTokenBranding, vaultBalances, rememberPool } from './chain.js'
 import { startIndexer } from './indexer.js'
 
 const app = express()
@@ -128,6 +128,29 @@ app.post('/api/upload/logo', express.raw({ type: 'image/*', limit: '4mb' }), asy
   res.json({ url: `${req.protocol}://${req.get('host')}/uploads/${name}`, via: 'local' })
 })
 
+// IPFS image proxy with in-memory cache: public gateways are slow and
+// flaky, so the first fetch tries several and later hits are instant.
+const ipfsCache = new Map()
+app.get('/api/ipfs/:cid', async (req, res) => {
+  const cid = req.params.cid
+  if (!/^[a-zA-Z0-9]{10,100}$/.test(cid)) return res.status(400).end()
+  const hit = ipfsCache.get(cid)
+  if (hit) return res.set('cache-control', 'public, max-age=86400').type(hit.type).send(hit.buf)
+  for (const gw of ['https://ipfs.io/ipfs/', 'https://dweb.link/ipfs/', 'https://w3s.link/ipfs/']) {
+    try {
+      const r = await fetch(gw + cid, { signal: AbortSignal.timeout(8000) })
+      if (!r.ok) continue
+      const buf = Buffer.from(await r.arrayBuffer())
+      if (buf.length > 3_000_000) break
+      const type = r.headers.get('content-type') || 'image/png'
+      if (ipfsCache.size > 300) ipfsCache.delete(ipfsCache.keys().next().value)
+      ipfsCache.set(cid, { type, buf })
+      return res.set('cache-control', 'public, max-age=86400').type(type).send(buf)
+    } catch { /* next gateway */ }
+  }
+  res.status(404).end()
+})
+
 // schedule preview for the launch form infographic
 app.post('/api/schedule/preview', (req, res) => {
   const cfg = normalizeDropConfig(req.body || {})
@@ -135,6 +158,55 @@ app.post('/api/schedule/preview', (req, res) => {
 })
 
 // ---- public data -------------------------------------------------------
+// Explore feed: PonsDrop launches only, enriched with on-chain price, cap,
+// graduation and branding. One external pons launch rides along as a demo
+// card so the page shows the format before our first launches land.
+let exploreCache = { at: 0, data: null }
+app.get('/api/explore', async (_req, res) => {
+  if (exploreCache.data && Date.now() - exploreCache.at < 30_000) return res.json(exploreCache.data)
+  const list = allLaunches().filter(l => l.status === 'live' || l.status === 'pending')
+  const ours = list
+    .filter(l => ['holders', 'split', 'burn', 'default'].includes(l.feeMode))
+    .sort((a, b) => Number(b.launchBlock || 0) - Number(a.launchBlock || 0))
+
+  const externals = list.filter(l => l.feeMode === 'external' && l.symbol && l.token)
+  const demoAddr = (process.env.DEMO_TOKEN || '').toLowerCase()
+  const demo = externals.find(l => l.token.toLowerCase() === demoAddr)
+    || externals.find(l => l.symbol === 'PEPE')
+    || externals[0]
+    || null
+
+  const items = [...ours, ...(demo ? [{ ...demo, demo: true }] : [])]
+  const out = []
+  for (const l of items.slice(0, 30)) {
+    const entry = { ...publicLaunch(l) }
+    try {
+      if (l.token) {
+        if (l.pool) rememberPool(l.token, l.pool)
+        const info = await readLaunchedToken(l.token)
+        if (info) {
+          const [grad, mcap, brand] = await Promise.all([
+            readGraduation(l.token),
+            readMarketCapUsd(l.token, info),
+            readTokenBranding(l.token),
+          ])
+          entry.graduated = grad.graduated
+          entry.gradPct = grad.graduated ? 100 : Math.min(100, Math.round(Number(grad.pairedPrincipal) / Number(grad.threshold) * 100))
+          if (mcap) {
+            entry.mcapUsd = mcap.mcapUsd
+            entry.priceUsd = mcap.priceWeth * mcap.ethUsd
+          }
+          entry.logo = entry.logo || brand.logo || null
+          entry.description = entry.description || brand.description || null
+        }
+      }
+    } catch { /* card renders with dashes if the RPC hiccups */ }
+    out.push(entry)
+  }
+  exploreCache = { at: Date.now(), data: out }
+  res.json(out)
+})
+
 app.get('/api/launches', (_req, res) => {
   const list = allLaunches()
     .filter(l => l.status === 'live' || l.status === 'pending')

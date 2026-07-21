@@ -112,6 +112,19 @@ export async function vaultBalances (vaultAddress, token) {
   return { eth, weth, token: tok }
 }
 
+// pons launch tokens expose logo() and description() even though the
+// contracts are unverified; probed and confirmed on-chain.
+const TOKEN_META_ABI = parseAbi([
+  'function logo() view returns (string)',
+  'function description() view returns (string)',
+])
+export async function readTokenBranding (token) {
+  const out = { logo: null, description: null }
+  try { out.logo = await publicClient.readContract({ address: token, abi: TOKEN_META_ABI, functionName: 'logo' }) } catch { /* not a pons token */ }
+  try { out.description = await publicClient.readContract({ address: token, abi: TOKEN_META_ABI, functionName: 'description' }) } catch { /* ditto */ }
+  return out
+}
+
 export async function readErc20Meta (token) {
   try {
     const [name, symbol] = await Promise.all([

@@ -10,9 +10,10 @@
 <body>
   <div id="nav"></div>
   <main class="wrap section" style="padding-top:34px">
-    <div class="hero" style="padding:20px 0 30px">
-      <h1 style="font-size:clamp(2rem,4.5vw,3rem)">Recent launches</h1>
-      <p class="lead" style="font-size:1.1rem">Every token launched on the pons factory, PonsDrop or not. Managed fee routes get a badge.</p>
+    <div class="hero" style="padding:20px 0 26px">
+      <div class="eyebrow">Explore</div>
+      <h1 style="font-size:clamp(2rem,4.5vw,3rem)">PonsDrop launches</h1>
+      <p class="lead" style="font-size:1.05rem">Only tokens created through this app appear here, not the full pons feed.</p>
     </div>
     <div class="launches" id="list"><div class="card">Loading...</div></div>
   </main>
@@ -21,26 +22,61 @@
     import { renderNav, renderFooter } from '/app.js'
     renderNav('explore')
     renderFooter()
-    const MODES = { holders: ['Drop to holders', 'gold'], split: ['Split fees', ''], burn: ['Buyback and burn', ''], default: ['Dev keeps fees', ''], external: ['Launched outside', ''] }
+
     const list = document.getElementById('list')
-    const launches = await fetch('/api/launches').then(r => r.json())
+    const gateway = (u) => u && u.startsWith('ipfs://') ? '/api/ipfs/' + u.slice(7).split('/')[0] : u
+
+    function feeChip (l) {
+      if (l.demo) return ['Launched on pons, example card', '']
+      if (l.feeMode === 'holders' && l.dropConfig) return [`Fees drop to holders #${l.dropConfig.holderFrom}-#${l.dropConfig.holderTo}`, 'gold']
+      if (l.feeMode === 'holders') return ['Fees drop to holders', 'gold']
+      if (l.feeMode === 'split') return [`Fees split across ${l.splitConfig?.length || 'several'} wallets`, 'gold']
+      if (l.feeMode === 'burn') return ['Fees buy back and burn', 'gold']
+      return ['Fees to the dev', '']
+    }
+
+    function fmtPrice (p) {
+      if (p === null || p === undefined) return '-'
+      if (p === 0) return '$0'
+      return '$' + p.toLocaleString('en-US', { maximumSignificantDigits: 3, maximumFractionDigits: 12 })
+    }
+    const fmtCap = (n) => n === null || n === undefined ? '-' : n >= 1e6 ? '$' + (n / 1e6).toFixed(2) + 'M' : '$' + (n / 1e3).toFixed(2) + 'K'
+
+    function avatar (l) {
+      const src = gateway(l.logo)
+      if (src) return `<img class="xavatar" src="${esc(src)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;xavatar xph&quot;>${esc((l.symbol || '?')[0])}</div>'">`
+      return `<div class="xavatar xph">${esc((l.symbol || '?')[0])}</div>`
+    }
+
+    const launches = await fetch('/api/explore').then(r => r.json())
     if (!launches.length) {
-      list.innerHTML = '<div class="card"><h3>Nothing yet</h3><p style="color:var(--muted)">The indexer backfills from the factory start block on first run. Give it a minute, or be the first: <a href="/launch">launch a token</a>.</p></div>'
+      list.innerHTML = '<div class="card"><h3>Nothing yet</h3><p style="color:var(--muted);margin:0">Tokens launched through PonsDrop will show up here. Be the first: <a href="/launch">launch a token</a>.</p></div>'
     } else {
       list.innerHTML = launches.map(l => {
-        const [label, tone] = MODES[l.feeMode] || MODES.external
-        return `<a class="card launchcard" href="/token/${l.token || l.id}">
-          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-            <span class="sym">${esc(l.symbol) || '?'}</span>
-            <span class="badge ${tone}">${label}</span>
+        const [chip, tone] = feeChip(l)
+        const grad = l.graduated ? 100 : (l.gradPct ?? 0)
+        return `<div class="card xcard">
+          <div class="xhead">
+            ${avatar(l)}
+            <div style="min-width:0">
+              <div class="xname">${esc(l.name) || 'Unnamed'}</div>
+              <div class="xsym">$${esc(l.symbol) || '?'}</div>
+            </div>
+            <span class="badge ${l.graduated ? 'gold' : 'live'}" style="margin-left:auto">${l.graduated ? 'Graduated' : 'Climbing'}</span>
           </div>
-          <div class="nm">${esc(l.name) || ''}</div>
-          <div class="ca">${l.token || 'pending confirmation'}</div>
-          ${l.status === 'live' ? '<div style="margin-top:8px"><span class="badge live">live</span></div>' : ''}
-        </a>`
+          ${l.description ? `<p class="xdesc">${esc(l.description)}</p>` : ''}
+          <div><span class="badge ${tone}" style="font-size:.76rem;padding:6px 12px">${chip}</span></div>
+          <div class="xstats">
+            <div><div class="k">Price</div><div class="v">${fmtPrice(l.priceUsd)}</div></div>
+            <div><div class="k">Market cap</div><div class="v">${fmtCap(l.mcapUsd)}</div></div>
+            <div><div class="k">Graduation</div><div class="v">${l.token ? grad + '%' : '-'}</div></div>
+          </div>
+          <div class="xbar"><span style="width:${grad}%"></span></div>
+          <a class="xlink" href="/token/${l.token || l.id}">Token details &nearr;</a>
+        </div>`
       }).join('')
     }
-    function esc (s) { return s ? s.replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c])) : s }
+    function esc (s) { return s ? String(s).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c])) : s }
   </script>
 </body>
 </html>
