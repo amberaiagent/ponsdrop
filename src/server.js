@@ -173,7 +173,7 @@ app.get('/api/explore', async (_req, res) => {
   if (exploreCache.data && Date.now() - exploreCache.at < 30_000) return res.json(exploreCache.data)
   const list = allLaunches().filter(l => l.status === 'live' || l.status === 'pending')
   const ours = list
-    .filter(l => ['holders', 'split', 'burn', 'default'].includes(l.feeMode))
+    .filter(l => ['holders', 'split', 'burn', 'charity', 'default'].includes(l.feeMode))
     .sort((a, b) => Number(b.launchBlock || 0) - Number(a.launchBlock || 0))
 
   const externals = list.filter(l => l.feeMode === 'external' && l.symbol && l.token)
