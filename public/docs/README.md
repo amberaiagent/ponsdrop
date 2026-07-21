@@ -24,8 +24,8 @@ The launch itself is a single transaction your wallet signs on the pons factory.
 
 ## Where to go next
 
-- [Launch guide](/docs/launch-guide.md): step by step, from empty form to live token.
-- [Fee modes](/docs/fee-modes.md): what each route does, in detail.
-- [Trust model](/docs/trust-model.md): what is on-chain, what our bot does, what you are trusting.
+- [Launch guide](launch-guide.md): step by step, from empty form to live token.
+- [Fee modes](fee-modes.md): what each route does, in detail.
+- [Trust model](trust-model.md): what is on-chain, what our bot does, what you are trusting.
 
 > PonsDrop is an unofficial layer on pons and is not affiliated with Pons Labs. Tokens are volatile; transactions may be irreversible. Nothing in these docs is financial advice.

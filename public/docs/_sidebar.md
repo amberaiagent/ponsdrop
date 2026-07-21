@@ -1,13 +1,13 @@
 - Getting started
-  - [Overview](/docs/)
-  - [Launch guide](/docs/launch-guide.md)
+  - [Overview](README.md)
+  - [Launch guide](launch-guide.md)
 
 - Fee routing
-  - [Fee modes](/docs/fee-modes.md)
-  - [Drop to holders](/docs/drop-to-holders.md)
-  - [Trust model](/docs/trust-model.md)
+  - [Fee modes](fee-modes.md)
+  - [Drop to holders](drop-to-holders.md)
+  - [Trust model](trust-model.md)
 
 - Reference
-  - [Contracts and network](/docs/contracts.md)
-  - [HTTP API](/docs/api.md)
-  - [Self-hosting](/docs/self-hosting.md)
+  - [Contracts and network](contracts.md)
+  - [HTTP API](api.md)
+  - [Self-hosting](self-hosting.md)

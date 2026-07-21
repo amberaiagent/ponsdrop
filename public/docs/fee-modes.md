@@ -15,7 +15,7 @@ The trench mode. Fees accumulate in a PonsDrop vault and get airdropped to your 
 - **% per round**: the share of the vault distributed when a round fires.
 - **Triggers**: market cap milestones on a ladder (×2, ×3, +$50k steps...) or a plain timer (every N hours).
 
-Full detail on triggers, exclusions and edge cases: [Drop to holders](/docs/drop-to-holders.md).
+Full detail on triggers, exclusions and edge cases: [Drop to holders](drop-to-holders.md).
 
 ## Split fees
 

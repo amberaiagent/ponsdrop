@@ -4,7 +4,7 @@ From empty form to live token in five steps.
 
 ## 1. Get a wallet on Robinhood Chain
 
-Any injected wallet works: MetaMask, Rabby, Rainbow. Open [/launch](/launch) and hit **Connect wallet**: if Robinhood Chain (4663) is missing, the site offers to add it with one click.
+Any injected wallet works: MetaMask, Rabby, Rainbow. Open [the launch page](/launch ':ignore') and hit **Connect wallet**: if Robinhood Chain (4663) is missing, the site offers to add it with one click.
 
 You need enough ETH for the 0.0005 launch fee, gas, and any dev buy you want.
 
@@ -25,7 +25,7 @@ This is the PonsDrop part. Four options, one choice, set forever at launch:
 | Split fees | wallets you list | addresses + percentages |
 | Buyback and burn | the token itself, then `0x...dEaD` | none |
 
-See [Fee modes](/docs/fee-modes.md) for the details of each.
+See [Fee modes](fee-modes.md) for the details of each.
 
 ## 4. Sign the transaction
 
