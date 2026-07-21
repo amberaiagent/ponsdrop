@@ -93,11 +93,6 @@ $('#f-logo-file').addEventListener('change', async (e) => {
     e.target.value = ''
   }
 })
-$('#f-logo').addEventListener('input', () => {
-  const v = $('#f-logo').value.trim()
-  if (/^https?:\/\//.test(v)) { $('#logo-preview').src = v; $('#logo-preview').hidden = false }
-})
-
 // ---- fee mode selection ------------------------------------------------
 let mode = 'default'
 $$('#modes .mode').forEach(el => el.addEventListener('click', () => {

@@ -310,10 +310,10 @@ pre { font-family: var(--mono); }
 .divider { height: 1px; background: var(--line-soft); margin: 22px 0; max-width: 520px; }
 .nav-logo { height: 46px; width: 46px; object-fit: contain; mix-blend-mode: multiply; }
 
-/* mock launch card on the landing */
-.mock { pointer-events: none; user-select: none; }
-.mock .mockrow { display: flex; gap: 10px; margin-bottom: 10px; }
-.mock .ph { background: var(--bg-alt); border-radius: 10px; height: 40px; flex: 1; }
-.mock .ph.tall { height: 74px; }
-.mock .mockline { display: flex; justify-content: space-between; font-size: .82rem; color: var(--muted); padding: 9px 2px; border-bottom: 1px solid var(--line-soft); }
-.mock .mockline:last-child { border-bottom: none; }
+/* quick-start card on the landing */
+.mockline {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  font-size: .84rem; color: var(--muted);
+  padding: 10px 2px; border-bottom: 1px solid var(--line-soft);
+}
+.mockline:last-child { border-bottom: none; }
