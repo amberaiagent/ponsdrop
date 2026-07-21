@@ -22,7 +22,7 @@ This is the robindrop part. Four options, one choice, set forever at launch:
 | --- | --- | --- |
 | Keep it | your connected wallet | none |
 | Drop to holders | your holders, in rounds | range, rounds, %, triggers |
-| Team split | wallets you list | addresses + percentages |
+| Split fees | wallets you list | addresses + percentages |
 | Buyback and burn | the token itself, then `0x...dEaD` | none |
 
 See [Fee modes](/docs/fee-modes.md) for the details of each.

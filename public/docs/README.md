@@ -6,7 +6,7 @@ Every pons token pays its creator 70% of all trading fees on its pool, forever. 
 
 - **Keep it**: fees to your own wallet, exactly like launching on pons directly.
 - **Drop to holders**: fees pool in a vault and rain on your holders in configurable rounds.
-- **Team split**: fees split automatically between up to 20 wallets.
+- **Split fees**: fees split automatically between up to 20 wallets.
 - **Buyback and burn**: fees market-buy your token and burn it.
 
 The launch itself is a single transaction your wallet signs on the pons factory. robindrop never holds your funds, your token, or your pool.

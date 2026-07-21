@@ -2,7 +2,7 @@
 
 Launch fixed-supply tokens on Robinhood Chain through pons, and route the creator
 fees wherever you want at launch: your own wallet, round drops to your holders,
-a team split, or a buyback and burn.
+a fee split, or a buyback and burn.
 
 Rob the dev. Feed the holders.
 
@@ -17,7 +17,7 @@ Rob the dev. Feed the holders.
     market cap ladder (`x2`/`x3`/`+$X` from a start cap) or on a timer. Each round
     sends its % of the vault, split evenly. After the schedule the vault flushes
     100% at the same cadence.
-  - **Team split**: up to 20 wallets by percent, paid automatically.
+  - **Split fees**: up to 20 wallets by percent, paid automatically.
   - **Buyback and burn**: fees market-buy the token on its own pool and burn it.
 - **Explore** (`/explore`): all factory launches from the indexer.
 - **Token page** (`/token/<address>`): cap, graduation progress, vault balances,

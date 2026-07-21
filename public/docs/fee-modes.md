@@ -17,7 +17,7 @@ The trench mode. Fees accumulate in a robindrop vault and get airdropped to your
 
 Full detail on triggers, exclusions and edge cases: [Drop to holders](/docs/drop-to-holders.md).
 
-## Team split
+## Split fees
 
 Up to 20 wallets, each with a percentage, summing to exactly 100. The bot forwards both the ETH side and the token side of collected fees by those shares whenever the vault holds enough to be worth the gas. Good for splitting with a co-dev, an artist, a KOL deal, or a treasury.
 

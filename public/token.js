@@ -4,7 +4,7 @@ renderFooter()
 
 const addr = location.pathname.split('/').pop()
 const main = document.getElementById('main')
-const MODES = { holders: 'Drop to holders', split: 'Team split', burn: 'Buyback and burn', default: 'Dev keeps fees', external: 'Launched outside robindrop' }
+const MODES = { holders: 'Drop to holders', split: 'Split fees', burn: 'Buyback and burn', default: 'Dev keeps fees', external: 'Launched outside robindrop' }
 
 async function render () {
   const data = await fetch('/api/token/' + addr).then(r => r.json())

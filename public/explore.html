@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Explore launches | robindrop</title>
+  <link rel="icon" type="image/png" href="/logo.png">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -20,7 +21,7 @@
     import { renderNav, renderFooter } from '/app.js'
     renderNav('explore')
     renderFooter()
-    const MODES = { holders: ['Drop to holders', 'gold'], split: ['Team split', ''], burn: ['Buyback and burn', ''], default: ['Dev keeps fees', ''], external: ['Launched outside', ''] }
+    const MODES = { holders: ['Drop to holders', 'gold'], split: ['Split fees', ''], burn: ['Buyback and burn', ''], default: ['Dev keeps fees', ''], external: ['Launched outside', ''] }
     const list = document.getElementById('list')
     const launches = await fetch('/api/launches').then(r => r.json())
     if (!launches.length) {

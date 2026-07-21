@@ -11,11 +11,7 @@ export function renderNav (active = '') {
     <div class="navbar">
       <div class="inner">
         <a class="wordmark" href="/">
-          <svg width="22" height="22" viewBox="0 0 26 26" fill="none">
-            <rect width="26" height="26" rx="7" fill="#1d1d1f"/>
-            <path d="M13 4.5C13 4.5 6.8 11.2 6.8 15.4a6.2 6.2 0 0 0 12.4 0C19.2 11.2 13 4.5 13 4.5Z" fill="#fff"/>
-            <path d="M13 9.8c0 0-3.1 3.5-3.1 5.7a3.1 3.1 0 0 0 6.2 0C16.1 13.3 13 9.8 13 9.8Z" fill="#0071e3"/>
-          </svg>
+          <img class="nav-logo" src="/logo.png" alt="">
           robindrop
         </a>
         <div class="pillnav">
@@ -53,6 +49,22 @@ export function renderFooter () {
         </div>
       </div>
     </footer>`
+}
+
+// Scroll reveal: add .reveal (+ .d1/.d2/.d3 for stagger) to elements.
+export function initReveal () {
+  const els = $$('.reveal')
+  // Anything already on screen shows immediately, no waiting on the observer.
+  for (const el of els) {
+    const r = el.getBoundingClientRect()
+    if (r.top < innerHeight * 0.95 && r.bottom > 0) el.classList.add('in')
+  }
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) }
+  }, { threshold: 0.12 })
+  els.forEach(el => { if (!el.classList.contains('in')) io.observe(el) })
+  // Last-resort: if the observer never fires (old browser, odd embed), show everything.
+  setTimeout(() => els.forEach(el => el.classList.add('in')), 3000)
 }
 
 let toastTimer
