@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Launch a token | robindrop</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="nav"></div>
+
+  <main class="wrap section">
+    <div class="hero" style="padding:10px 0 26px">
+      <div class="kicker">launch on robinhood chain via pons</div>
+      <h1>Deploy the token.<br>Pick where the <span class="gold">fees</span> go.</h1>
+      <p class="lead">Fixed 1B supply, locked pool, 0.0005 ETH launch fee. You keep 70% of trading fees as creator. Route them to yourself, to your holders, to a team split, or into a burn.</p>
+    </div>
+
+    <div class="card">
+      <h2>1. Token</h2>
+      <div class="row">
+        <div class="field">
+          <label for="f-name">Name</label>
+          <input id="f-name" maxlength="48" placeholder="Robin Coin">
+        </div>
+        <div class="field">
+          <label for="f-symbol">Ticker</label>
+          <input id="f-symbol" maxlength="12" placeholder="ROBIN" style="text-transform:uppercase">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-logo">Logo URL</label>
+        <input id="f-logo" class="mono" placeholder="ipfs://... or https://...">
+        <div class="hint">Paste an image link. ipfs:// links from the pons uploader work best.</div>
+      </div>
+      <div class="field">
+        <label for="f-desc">Description</label>
+        <textarea id="f-desc" rows="3" maxlength="500" placeholder="What is this coin about?"></textarea>
+      </div>
+      <div class="row3">
+        <div class="field"><label for="f-tw">X / Twitter</label><input id="f-tw" placeholder="https://x.com/..."></div>
+        <div class="field"><label for="f-tg">Telegram</label><input id="f-tg" placeholder="https://t.me/..."></div>
+        <div class="field"><label for="f-web">Website</label><input id="f-web" placeholder="https://..."></div>
+      </div>
+      <div class="field" style="max-width:280px">
+        <label for="f-devbuy">Dev buy (ETH, optional)</label>
+        <input id="f-devbuy" class="mono" type="number" min="0" step="0.001" placeholder="0.00">
+        <div class="hint">Sent on top of the launch fee. Max wallet is 5% of supply.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>2. Fee routing</h2>
+      <p style="color:var(--muted);margin-top:-6px">Creator fees are 70% of all trading fees on the pool, forever. Choose who eats.</p>
+      <div class="modes" id="modes">
+        <div class="mode active" data-mode="default">
+          <div class="t">Keep it</div>
+          <div class="d">Fees go to your connected wallet. Classic dev move. Claim on pons anytime.</div>
+        </div>
+        <div class="mode" data-mode="holders">
+          <div class="t">Drop to holders <span class="badge gold">trench mode</span></div>
+          <div class="d">Fees pool in a vault and rain on your holders in rounds. Pick the range, the rounds and the cap ladder.</div>
+        </div>
+        <div class="mode" data-mode="split">
+          <div class="t">Team split</div>
+          <div class="d">Fees split automatically between wallets you set, by percent.</div>
+        </div>
+        <div class="mode" data-mode="burn">
+          <div class="t">Buyback and burn</div>
+          <div class="d">Fees market-buy your token and send it to the dead address. Supply only goes down.</div>
+        </div>
+      </div>
+
+      <!-- holders config -->
+      <div id="panel-holders" class="card tint" style="margin-top:18px" hidden>
+        <h3>Drop settings</h3>
+        <div class="chips" id="presets">
+          <button class="chip" data-preset="halving">Halving: 50% each round, cap x2</button>
+          <button class="chip" data-preset="fullsend">Full send: 100% at every milestone</button>
+          <button class="chip" data-preset="drip">Drip: 20% every 12h</button>
+        </div>
+        <div class="row3">
+          <div class="field">
+            <label for="d-from">Holders from #</label>
+            <input id="d-from" class="mono" type="number" min="1" max="1000" value="1">
+          </div>
+          <div class="field">
+            <label for="d-to">to #</label>
+            <input id="d-to" class="mono" type="number" min="1" max="1000" value="200">
+          </div>
+          <div class="field">
+            <label for="d-rounds">Rounds</label>
+            <input id="d-rounds" class="mono" type="number" min="1" max="30" value="2">
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="d-pct">% of vault per round</label>
+            <input id="d-pct" class="mono" type="number" min="1" max="100" value="50">
+            <div class="hint">Share of everything sitting in the fee vault when the round fires. After the last round the vault flushes 100% at the same pace.</div>
+          </div>
+          <div class="field">
+            <label for="d-trigger">Round trigger</label>
+            <select id="d-trigger">
+              <option value="mcap">Market cap milestones</option>
+              <option value="interval">Timer (every N hours)</option>
+            </select>
+          </div>
+        </div>
+        <div class="row3" id="mcap-fields">
+          <div class="field">
+            <label for="d-start">First round at cap ($)</label>
+            <input id="d-start" class="mono" type="number" min="0" step="1000" placeholder="50000">
+          </div>
+          <div class="field">
+            <label for="d-capmode">Cap ladder</label>
+            <select id="d-capmode">
+              <option value="multiply">Multiply xN</option>
+              <option value="step">Step +$X</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="d-capval" id="d-capval-label">Factor</label>
+            <input id="d-capval" class="mono" type="number" min="0" step="0.5" value="2">
+          </div>
+        </div>
+        <div class="row" id="interval-fields" hidden>
+          <div class="field" style="max-width:240px">
+            <label for="d-hours">Every N hours</label>
+            <input id="d-hours" class="mono" type="number" min="1" max="720" value="24">
+          </div>
+        </div>
+        <div>
+          <div class="hint" style="margin-bottom:2px">Schedule preview, % of vault per round</div>
+          <div class="bars" id="bars"></div>
+          <div class="barlabels" id="barlabels"></div>
+        </div>
+      </div>
+
+      <!-- split config -->
+      <div id="panel-split" class="card tint" style="margin-top:18px" hidden>
+        <h3>Split recipients</h3>
+        <div id="splits"></div>
+        <button class="btn ghost small" id="add-split">+ add wallet</button>
+        <div class="hint" style="margin-top:8px">Percentages must add up to 100.</div>
+      </div>
+
+      <div id="panel-burn" class="card tint" style="margin-top:18px" hidden>
+        <h3>Buyback and burn</h3>
+        <p style="color:var(--muted);margin:0">Nothing to configure. The vault collects fees, swaps them into your token on the pool and sends everything to <span class="mono">0x...dEaD</span>. Runs continuously once fees cover gas.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3. Send it</h2>
+      <div class="statgrid" style="margin-bottom:18px">
+        <div class="stat"><div class="k">Launch fee</div><div class="v" id="s-fee">...</div></div>
+        <div class="stat"><div class="k">Supply</div><div class="v">1,000,000,000</div></div>
+        <div class="stat"><div class="k">Creator fee share</div><div class="v">70%</div></div>
+        <div class="stat"><div class="k">Graduation</div><div class="v">4.2 ETH</div></div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+        <button class="btn white" id="connect" style="background:var(--paper-tint);border:1.5px solid var(--line)">Connect wallet</button>
+        <button class="btn gold" id="launch" disabled>Launch token</button>
+        <span id="status" class="hint"></span>
+      </div>
+      <p class="hint" style="margin-top:14px">Your wallet signs the launch transaction directly on the pons factory. robindrop never holds your funds. For managed fee modes the creator fee wallet is a robindrop vault, spelled out in <a href="/docs">the docs</a>.</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      robindrop, an unofficial layer on pons. Not affiliated with Pons Labs.
+      <div class="fine">Tokens are volatile. Transactions may be irreversible. Nothing here is financial advice.</div>
+    </div>
+  </footer>
+
+  <script type="module" src="/launch.js"></script>
+</body>
+</html>

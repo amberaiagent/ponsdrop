@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin | robindrop</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="nav"></div>
+  <main class="wrap section">
+    <div class="card" id="login">
+      <h2>Admin</h2>
+      <div class="field" style="max-width:340px">
+        <label for="tok">Admin token</label>
+        <input id="tok" type="password" class="mono">
+      </div>
+      <button class="btn" id="go">Enter</button>
+      <span class="error" id="err"></span>
+    </div>
+    <div id="panel" hidden></div>
+  </main>
+  <script type="module">
+    import { renderNav, toast } from '/app.js'
+    renderNav('')
+    let token = sessionStorage.getItem('rd-admin') || ''
+    const login = document.getElementById('login')
+    const panel = document.getElementById('panel')
+
+    document.getElementById('go').addEventListener('click', async () => {
+      token = document.getElementById('tok').value
+      const r = await fetch('/api/admin/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ token }) })
+      if (!r.ok) { document.getElementById('err').textContent = ' wrong token'; return }
+      sessionStorage.setItem('rd-admin', token)
+      load()
+    })
+
+    async function api (path, opts = {}) {
+      return fetch(path, { ...opts, headers: { 'content-type': 'application/json', 'x-admin-token': token, ...opts.headers } }).then(r => r.json())
+    }
+
+    async function load () {
+      const launches = await api('/api/admin/launches')
+      if (launches.error) { document.getElementById('err').textContent = ' ' + launches.error; return }
+      login.hidden = true
+      panel.hidden = false
+      panel.innerHTML = launches.map(l => `
+        <div class="card" style="margin-bottom:16px">
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <strong>${l.symbol || l.id}</strong>
+            <span class="badge">${l.feeMode || '?'}</span>
+            <span class="badge ${l.status === 'live' ? 'live' : ''}">${l.status}</span>
+            ${l.paused ? '<span class="badge" style="color:var(--danger)">paused</span>' : ''}
+            <span class="mono" style="font-size:.75rem;opacity:.6">${l.token || 'no token yet'}</span>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
+            <button class="btn ghost small" data-a="pause" data-id="${l.id}">${l.paused ? 'Resume' : 'Pause'}</button>
+            <button class="btn ghost small" data-a="force" data-id="${l.id}">Force round now</button>
+            <button class="btn ghost small" data-a="json" data-id="${l.id}">JSON</button>
+          </div>
+          <pre class="mono" id="json-${l.id}" style="display:none;font-size:.72rem;overflow-x:auto;background:var(--paper-tint);padding:12px;border-radius:12px">${JSON.stringify(l, null, 2).replace(/</g, '&lt;')}</pre>
+        </div>`).join('') || '<div class="card">No launches yet.</div>'
+
+      panel.querySelectorAll('button').forEach(b => b.addEventListener('click', async () => {
+        const id = b.dataset.id
+        const l = launches.find(x => x.id === id)
+        if (b.dataset.a === 'json') {
+          const el = document.getElementById('json-' + id)
+          el.style.display = el.style.display === 'none' ? 'block' : 'none'
+          return
+        }
+        const body = b.dataset.a === 'pause' ? { paused: !l.paused } : { forceRound: true }
+        await api('/api/admin/launches/' + id, { method: 'PATCH', body: JSON.stringify(body) })
+        toast('Updated')
+        load()
+      }))
+    }
+
+    if (token) load()
+  </script>
+</body>
+</html>

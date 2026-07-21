@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Explore launches | robindrop</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="nav"></div>
+  <main class="wrap section">
+    <div class="hero" style="padding:10px 0 26px">
+      <h1>Recent launches</h1>
+      <p class="lead">Every token launched on the pons factory, robindrop or not. Managed fee routes get a badge.</p>
+    </div>
+    <div class="launches" id="list"><div class="card">Loading...</div></div>
+  </main>
+  <footer><div class="wrap">robindrop, an unofficial layer on pons.</div></footer>
+  <script type="module">
+    import { renderNav, short } from '/app.js'
+    renderNav('explore')
+    const MODES = { holders: ['Drop to holders', 'gold'], split: ['Team split', ''], burn: ['Buyback and burn', ''], default: ['Dev keeps fees', ''], external: ['Launched outside', ''] }
+    const list = document.getElementById('list')
+    const launches = await fetch('/api/launches').then(r => r.json())
+    if (!launches.length) {
+      list.innerHTML = '<div class="card"><h3>Nothing yet</h3><p style="color:var(--muted)">The indexer backfills from the factory start block on first run. Give it a minute, or be the first: <a href="/launch">launch a token</a>.</p></div>'
+    } else {
+      list.innerHTML = launches.map(l => {
+        const [label, tone] = MODES[l.feeMode] || MODES.external
+        return `<a class="card launchcard" href="/token/${l.token || l.id}">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <span class="sym">${esc(l.symbol) || '?'}</span>
+            <span class="badge ${tone}">${label}</span>
+          </div>
+          <div class="nm">${esc(l.name) || ''}</div>
+          <div class="ca">${l.token || 'pending confirmation'}</div>
+          ${l.status === 'live' ? '<div style="margin-top:8px"><span class="badge live">live</span></div>' : ''}
+        </a>`
+      }).join('')
+    }
+    function esc (s) { return s ? s.replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' }[c])) : s }
+  </script>
+</body>
+</html>

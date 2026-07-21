@@ -1,0 +1,20 @@
+{
+  "name": "robindrop",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Launch tokens on Robinhood Chain through pons, route creator fees to your holders",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "bot": "node bot/bot.js",
+    "read-config": "node scripts/read-onchain-config.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "viem": "^2.21.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

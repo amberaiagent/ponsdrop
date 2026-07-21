@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file: .env
+    volumes:
+      - ./data:/app/data
+
+  bot:
+    build: .
+    restart: unless-stopped
+    command: ["node", "bot/bot.js"]
+    env_file: .env
+    environment:
+      - SITE_URL=http://web:3000
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - web
