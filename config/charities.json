@@ -1,11 +1,35 @@
 [
   {
+    "id": "stjude",
+    "name": "St. Jude Children's Research Hospital",
+    "blurb": "Leading pediatric cancer research and treatment, families never receive a bill",
+    "url": "https://www.stjude.org",
+    "logo": "/charities/stjude.png",
+    "address": "0x92EE2370b56DC32794A6CD72585dC01d4288D314",
+    "source": "https://www.stjude.org/donate/crypto.html",
+    "verification": "ENS nft.stjude.eth resolves to this address on Ethereum mainnet; EOA",
+    "verifiedAt": "2026-07-21"
+  },
+  {
+    "id": "givewell",
+    "name": "GiveWell",
+    "blurb": "Funds the most cost-effective, evidence-backed charities in global health",
+    "url": "https://www.givewell.org",
+    "logo": "/charities/givewell.png",
+    "address": "0x4647c3b4c5ba4efa6d8197331de00c26ce36e8e6",
+    "source": "https://www.givewell.org/about/donate/cryptocurrency",
+    "verification": "Static address published on GiveWell's own donation page; EOA",
+    "verifiedAt": "2026-07-21"
+  },
+  {
     "id": "internet-archive",
     "name": "Internet Archive",
     "blurb": "Non-profit digital library preserving the web, books and culture for everyone",
     "url": "https://archive.org",
+    "logo": "/charities/internet-archive.png",
     "address": "0x1971837a3df07b01e30b313e6f3614b85cebc08a",
     "source": "https://archive.org/donate/cryptocurrency",
+    "verification": "Static address published on archive.org's own donation page; EOA",
     "verifiedAt": "2026-07-21"
   },
   {
@@ -13,8 +37,10 @@
     "name": "Electronic Frontier Foundation",
     "blurb": "Defends digital privacy, security and free expression since 1990",
     "url": "https://www.eff.org",
+    "logo": "/charities/eff.png",
     "address": "0x1ca9EB2a5C213d417269134b80111F57e1644105",
     "source": "https://www.eff.org/pages/cryptocurrency-donations",
+    "verification": "Static address published on EFF's own donation page; EOA",
     "verifiedAt": "2026-07-21"
   },
   {
@@ -22,8 +48,10 @@
     "name": "Freedom of the Press Foundation",
     "blurb": "Protects and defends public-interest journalism",
     "url": "https://freedom.press",
+    "logo": "/charities/fpf.png",
     "address": "0xC423F8aEDf1753Bc0ab58e455B0b5421CafE949e",
     "source": "https://freedom.press/donate/cryptocurrency/",
+    "verification": "Static address published on FPF's own donation page; EOA",
     "verifiedAt": "2026-07-21"
   }
 ]

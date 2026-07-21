@@ -111,7 +111,8 @@ let charityId = null
   const list = $('#charity-list')
   list.innerHTML = (cfg.charities || []).map(c => `
     <label class="mode" style="display:flex;gap:12px;align-items:flex-start;cursor:pointer">
-      <input type="radio" name="charity" value="${c.id}" style="width:auto;margin-top:4px">
+      <input type="radio" name="charity" value="${c.id}" style="width:auto;margin-top:12px">
+      ${c.logo ? `<img src="${c.logo}" alt="" style="width:40px;height:40px;border-radius:10px;object-fit:contain;background:#fff;border:1px solid var(--line-soft);flex:none;margin-top:2px">` : ''}
       <span style="min-width:0">
         <span style="font-weight:600;display:block">${c.name}</span>
         <span class="d" style="display:block">${c.blurb}</span>

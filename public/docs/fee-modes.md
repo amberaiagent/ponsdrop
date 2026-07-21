@@ -31,13 +31,17 @@ Creator fees become public, on-chain donations:
 
 Built-in options ship with addresses copied from each charity's **own official donation page** (sources are linked in the launch form):
 
-| Charity | Address source |
+| Charity | Verification |
 | --- | --- |
-| Internet Archive | [archive.org/donate/cryptocurrency](https://archive.org/donate/cryptocurrency) |
-| Electronic Frontier Foundation | [eff.org/pages/cryptocurrency-donations](https://www.eff.org/pages/cryptocurrency-donations) |
-| Freedom of the Press Foundation | [freedom.press/donate/cryptocurrency](https://freedom.press/donate/cryptocurrency/) |
+| St. Jude Children's Research Hospital | ENS `nft.stjude.eth` resolves to this address on-chain; published at [stjude.org/donate/crypto](https://www.stjude.org/donate/crypto.html) |
+| GiveWell | Static address on [givewell.org's donation page](https://www.givewell.org/about/donate/cryptocurrency) |
+| Internet Archive | Static address on [archive.org/donate/cryptocurrency](https://archive.org/donate/cryptocurrency) |
+| Electronic Frontier Foundation | Static address on [eff.org/pages/cryptocurrency-donations](https://www.eff.org/pages/cryptocurrency-donations) |
+| Freedom of the Press Foundation | Static address on [freedom.press/donate/cryptocurrency](https://freedom.press/donate/cryptocurrency/) |
 
-You can also paste any charity's address yourself. Note that many large charities (St. Jude, Save the Children, GiveDirectly) accept crypto only through processors like The Giving Block or Endaoment, which generate a fresh address per donation, so they have no static address to hardcode. Get an address from the charity's own site and triple-check it: donations are irreversible, and PonsDrop cannot verify that a custom address belongs to who you think it does.
+Every built-in address is additionally checked to be a plain wallet (EOA), not a contract, so it is valid on any EVM network including Robinhood Chain. Donations are sent on Robinhood Chain: the charity's key controls them there, though the charity may need to add the network to see them.
+
+You can also paste any charity's address yourself. Note that some large charities (Shriners, Save the Children, GiveDirectly) accept crypto only through processors like The Giving Block, DonateStock or Endaoment, which generate a fresh address per donation, so they have no static address to hardcode. If you paste a custom address, make sure it is a plain wallet and not an exchange deposit address or a contract: those can swallow cross-chain funds forever. PonsDrop cannot verify a custom address belongs to who you think it does.
 
 ## Buyback and burn
 
