@@ -10,6 +10,8 @@ Deploy through the [pons](https://ponsfamily.com) factory from your own wallet,
 then point the 70% creator fee stream wherever you want: your holders, your team,
 a burn, or a charity. Set once at launch, runs itself.
 
+**[ponsdrop.fun](https://ponsdrop.fun)**
+
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Chain](https://img.shields.io/badge/chain-Robinhood%20%C2%B7%204663-1d9d55)](https://robinhoodchain.blockscout.com)
 [![Node](https://img.shields.io/badge/node-%3E%3D20-339933?logo=node.js&logoColor=white)](package.json)
@@ -50,7 +52,7 @@ flowchart LR
 - **Managed fee modes use a vault.** A fresh wallet is generated per launch and set as the on-chain `feeWallet`. Its key is stored AES-256-GCM encrypted; the encryption key lives only in server env vars. Only creator fees ever touch it.
 - **Everything is auditable.** Every payout is a plain transfer from the vault, visible on [Blockscout](https://robinhoodchain.blockscout.com) and listed on the token page.
 
-Full docs live at `/docs` on the site: launch guide, fee mode details, trust model, contracts, HTTP API.
+Full docs live at [ponsdrop.fun/docs](https://ponsdrop.fun/docs/): launch guide, fee mode details, trust model, contracts, HTTP API.
 
 ## Pages
 
