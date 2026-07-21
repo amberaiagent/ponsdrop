@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -54,11 +54,11 @@
             <span class="mono" style="font-size:.75rem;opacity:.6">${l.token || 'no token yet'}</span>
           </div>
           <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap">
-            <button class="btn ghost small" data-a="pause" data-id="${l.id}">${l.paused ? 'Resume' : 'Pause'}</button>
-            <button class="btn ghost small" data-a="force" data-id="${l.id}">Force round now</button>
-            <button class="btn ghost small" data-a="json" data-id="${l.id}">JSON</button>
+            <button class="btn secondary small" data-a="pause" data-id="${l.id}">${l.paused ? 'Resume' : 'Pause'}</button>
+            <button class="btn secondary small" data-a="force" data-id="${l.id}">Force round now</button>
+            <button class="btn secondary small" data-a="json" data-id="${l.id}">JSON</button>
           </div>
-          <pre class="mono" id="json-${l.id}" style="display:none;font-size:.72rem;overflow-x:auto;background:var(--paper-tint);padding:12px;border-radius:12px">${JSON.stringify(l, null, 2).replace(/</g, '&lt;')}</pre>
+          <pre class="mono" id="json-${l.id}" style="display:none;font-size:.72rem;overflow-x:auto;background:var(--bg-alt);padding:12px;border-radius:12px">${JSON.stringify(l, null, 2).replace(/</g, '&lt;')}</pre>
         </div>`).join('') || '<div class="card">No launches yet.</div>'
 
       panel.querySelectorAll('button').forEach(b => b.addEventListener('click', async () => {

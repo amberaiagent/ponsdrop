@@ -3,74 +3,131 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>robindrop | launch tokens, give the fees back</title>
-  <meta name="description" content="Launch tokens on Robinhood Chain through pons and route creator fees to your holders: round drops, team splits or buyback and burn.">
+  <title>robindrop: launch tokens, route the fees</title>
+  <meta name="description" content="Launch tokens on Robinhood Chain through pons and route creator fees at launch: round drops to holders, team splits or buyback and burn.">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <div id="nav"></div>
 
-  <main class="wrap">
-    <div class="hero">
-      <div class="kicker">robinhood chain / pons launch layer</div>
-      <h1>Launch the coin.<br><span class="gold">Rob the dev.</span> Feed the holders.</h1>
-      <p class="lead">Every pons token pays its creator 70% of trading fees, forever. robindrop lets you point that firehose wherever you want at launch: rain it on holders in rounds, split it with the team, or burn it all. Set once, runs itself.</p>
-      <div style="display:flex;gap:12px;margin-top:26px;flex-wrap:wrap">
-        <a class="btn gold" href="/launch">Launch a token</a>
-        <a class="btn white" href="/explore">Explore launches</a>
+  <main>
+    <div class="wrap">
+      <div class="hero">
+        <div class="chip">
+          <svg width="12" height="12" viewBox="0 0 26 26" fill="none"><path d="M13 2C13 2 5 10.5 5 16a8 8 0 0 0 16 0C21 10.5 13 2 13 2Z" fill="#0071e3"/></svg>
+          Launch on pons · Route creator fees
+        </div>
+        <h1>Launch tokens on Robinhood Chain.<br><span class="dim">Give the fees to your holders.</span></h1>
+        <p class="lead">robindrop is a launch layer for pons. Deploy from your wallet, then route the 70% creator fee stream at launch: keep it, drop it on your holders in rounds, split it with the team, or burn it all.</p>
+        <div class="actions">
+          <a class="btn" href="/launch">Launch a token</a>
+          <a class="btn secondary" href="/explore">Explore launches</a>
+          <a class="btn secondary" href="/docs/">Read the docs</a>
+        </div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><div class="k">Launch fee</div><div class="v">0.0005 ETH</div></div>
+        <div class="stat"><div class="k">Creator share</div><div class="v">70%</div></div>
+        <div class="stat"><div class="k">Graduation</div><div class="v">4.2 ETH</div></div>
+        <div class="stat"><div class="k">Chain</div><div class="v">Robinhood · 4663</div></div>
+      </div>
+    </div>
+
+    <div class="section alt">
+      <div class="wrap">
+        <div class="split">
+          <div>
+            <div class="eyebrow">Why robindrop</div>
+            <h2>Everything pons launches have, plus fee routing that runs itself.</h2>
+            <p style="color:var(--muted)">Same factory, same locked pool, same graduation. The difference is one field: the creator fee wallet. Point it at a robindrop vault and the fees follow rules you set once, at launch.</p>
+            <ul style="color:var(--muted);line-height:1.9;padding-left:20px;margin:0">
+              <li>Round drops to holders, trench style</li>
+              <li>Cap-ladder or timer triggers</li>
+              <li>Team splits up to 20 wallets</li>
+              <li>Buyback and burn on your own pool</li>
+            </ul>
+          </div>
+          <div class="card glass mock">
+            <h3 style="margin-bottom:16px">Launch token</h3>
+            <div class="mockrow"><div class="ph"></div><div class="ph"></div></div>
+            <div class="mockrow"><div class="ph"></div></div>
+            <div class="mockrow"><div class="ph tall"></div></div>
+            <div class="mockline"><span>Fee route</span><span style="color:var(--accent);font-weight:600">Drop to holders</span></div>
+            <div class="mockline"><span>Holders</span><span class="mono">#1 – #200</span></div>
+            <div class="mockline"><span>Rounds</span><span class="mono">10 × 50%, cap ×2</span></div>
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="section">
-      <div class="card">
-        <h2>How it works</h2>
-        <div class="steps">
-          <div class="step">
+      <div class="wrap">
+        <div class="eyebrow">How it works</div>
+        <h2>Three steps from idea to raining fees.</h2>
+        <div class="cards3" style="margin-top:26px">
+          <div class="card step">
             <div class="num">01</div>
             <h3>Deploy through pons</h3>
-            <p style="color:var(--muted)">Fixed 1B supply, locked Uniswap V3 pool, 0.0005 ETH fee. Your wallet signs, the factory deploys. Same launch as pons, plus one extra choice.</p>
+            <p style="color:var(--muted);margin:0">Fixed 1B supply, locked Uniswap V3 pool, 0.0005 ETH fee. Your wallet signs <span class="mono" style="font-size:.85em">launchToken()</span> on the factory directly.</p>
           </div>
-          <div class="step">
+          <div class="card step">
             <div class="num">02</div>
             <h3>Pick the fee route</h3>
-            <p style="color:var(--muted)">The creator fee wallet is set at launch. Keep it, or hand it to a robindrop vault with rules attached: holder drops, splits or burns.</p>
+            <p style="color:var(--muted);margin:0">Keep the fees, or hand them to a vault with rules attached: holder drops, splits or burns. Set once in the launch form.</p>
           </div>
-          <div class="step">
+          <div class="card step">
             <div class="num">03</div>
             <h3>The bot does the rest</h3>
-            <p style="color:var(--muted)">Fees are claimed from the locker and distributed by the schedule you chose. Every round is public on the token page and verifiable on-chain.</p>
+            <p style="color:var(--muted);margin:0">Fees are claimed from the locker and distributed on your schedule. Every payout is a plain transfer, public on the token page.</p>
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="card">
-        <h2>Fee modes</h2>
-        <div class="modes">
-          <div class="mode"><div class="t">Keep it</div><div class="d">Fees to your own wallet. The default pons behavior, zero robindrop involvement.</div></div>
-          <div class="mode"><div class="t">Drop to holders <span class="badge gold">trench mode</span></div><div class="d">Holders #1 to #1000, up to 30 rounds, cap ladder x2 or +$X, timer rounds if you prefer. Holding literally pays.</div></div>
-          <div class="mode"><div class="t">Team split</div><div class="d">Up to 20 wallets, percentages you set, paid out automatically as fees come in.</div></div>
-          <div class="mode"><div class="t">Buyback and burn</div><div class="d">Fees market-buy the token and send it to 0xdead. Number of tokens only goes down.</div></div>
+    <div class="section alt">
+      <div class="wrap">
+        <div class="eyebrow">Fee modes</div>
+        <h2>Choose who eats.</h2>
+        <div class="cards3" style="margin-top:26px">
+          <div class="card">
+            <div class="icon-dot">💼</div>
+            <h3>Keep it</h3>
+            <p style="color:var(--muted);margin:0">Fees to your own wallet. The default pons behavior, zero robindrop involvement.</p>
+          </div>
+          <div class="card">
+            <div class="icon-dot">🌧️</div>
+            <h3>Drop to holders <span class="badge gold">trench mode</span></h3>
+            <p style="color:var(--muted);margin:0">Holders #1 to #1000, up to 30 rounds, cap ladder ×2 or +$X, timer rounds if you prefer. Holding literally pays.</p>
+          </div>
+          <div class="card">
+            <div class="icon-dot">🤝</div>
+            <h3>Team split</h3>
+            <p style="color:var(--muted);margin:0">Up to 20 wallets, percentages you set, paid out automatically as fees come in.</p>
+          </div>
+          <div class="card">
+            <div class="icon-dot">🔥</div>
+            <h3>Buyback and burn</h3>
+            <p style="color:var(--muted);margin:0">Fees market-buy the token on its own pool and go to the dead address. Supply only goes down.</p>
+          </div>
         </div>
       </div>
+    </div>
 
-      <div class="card tint" style="text-align:center">
-        <h2 style="margin-bottom:6px">No cap, just drops.</h2>
-        <p style="color:var(--muted);margin-top:0">Launch fee 0.0005 ETH. Creator fees 70%. Graduation at 4.2 ETH.</p>
-        <a class="btn" href="/launch">Start a launch</a>
+    <div class="section">
+      <div class="wrap">
+        <div class="card tint" style="display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;padding:36px">
+          <div>
+            <h2 style="margin-bottom:6px">Ready to launch?</h2>
+            <p style="color:var(--muted);margin:0">Connect your wallet on Robinhood Chain and ship your token in minutes.</p>
+          </div>
+          <a class="btn" href="/launch">Open the launchpad</a>
+        </div>
       </div>
     </div>
   </main>
 
-  <footer>
-    <div class="wrap">
-      robindrop, an unofficial layer on <a href="https://ponsfamily.com" target="_blank" rel="noopener">pons</a>. Not affiliated with Pons Labs.
-      <div class="fine">
-        Factory <span class="mono">0xA5aAb3F0c6EeadF30Ef1D3Eb997108E976351feB</span> · Locker <span class="mono">0x736D76699C26D0d966744cAe304C000d471f7F35</span> · <a href="https://robinhoodchain.blockscout.com" target="_blank" rel="noopener">Explorer</a><br>
-        Tokens are volatile. Transactions may be irreversible. Nothing here is financial advice.
-      </div>
-    </div>
-  </footer>
-
-  <script type="module">import { renderNav } from '/app.js'; renderNav('')</script>
+  <div id="footer"></div>
+  <script type="module">import { renderNav, renderFooter } from '/app.js'; renderNav('home'); renderFooter()</script>
 </body>
 </html>

@@ -1,9 +1,10 @@
-import { $, $$, renderNav, toast, getConfig, connectWallet, fmtUsd } from '/app.js'
+import { $, $$, renderNav, renderFooter, toast, getConfig, connectWallet, fmtUsd } from '/app.js'
 import {
   createWalletClient, createPublicClient, custom, http, parseEther, decodeEventLog, parseAbiItem,
 } from 'https://esm.sh/viem@2.55.4'
 
 renderNav('launch')
+renderFooter()
 
 const cfg = await getConfig()
 $('#s-fee').textContent = cfg.launchFeeEth ? cfg.launchFeeEth + ' ETH' : '0.0005 ETH'

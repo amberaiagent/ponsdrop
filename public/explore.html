@@ -8,17 +8,18 @@
 </head>
 <body>
   <div id="nav"></div>
-  <main class="wrap section">
-    <div class="hero" style="padding:10px 0 26px">
-      <h1>Recent launches</h1>
-      <p class="lead">Every token launched on the pons factory, robindrop or not. Managed fee routes get a badge.</p>
+  <main class="wrap section" style="padding-top:34px">
+    <div class="hero" style="padding:20px 0 30px">
+      <h1 style="font-size:clamp(2rem,4.5vw,3rem)">Recent launches</h1>
+      <p class="lead" style="font-size:1.1rem">Every token launched on the pons factory, robindrop or not. Managed fee routes get a badge.</p>
     </div>
     <div class="launches" id="list"><div class="card">Loading...</div></div>
   </main>
-  <footer><div class="wrap">robindrop, an unofficial layer on pons.</div></footer>
+  <div id="footer"></div>
   <script type="module">
-    import { renderNav, short } from '/app.js'
+    import { renderNav, renderFooter } from '/app.js'
     renderNav('explore')
+    renderFooter()
     const MODES = { holders: ['Drop to holders', 'gold'], split: ['Team split', ''], burn: ['Buyback and burn', ''], default: ['Dev keeps fees', ''], external: ['Launched outside', ''] }
     const list = document.getElementById('list')
     const launches = await fetch('/api/launches').then(r => r.json())
@@ -28,7 +29,7 @@
       list.innerHTML = launches.map(l => {
         const [label, tone] = MODES[l.feeMode] || MODES.external
         return `<a class="card launchcard" href="/token/${l.token || l.id}">
-          <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
             <span class="sym">${esc(l.symbol) || '?'}</span>
             <span class="badge ${tone}">${label}</span>
           </div>

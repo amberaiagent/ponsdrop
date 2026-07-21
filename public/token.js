@@ -1,5 +1,6 @@
-import { renderNav, fmtUsd, fmtEth, short } from '/app.js'
-renderNav('')
+import { renderNav, renderFooter, fmtUsd, fmtEth, short } from '/app.js'
+renderNav('explore')
+renderFooter()
 
 const addr = location.pathname.split('/').pop()
 const main = document.getElementById('main')
@@ -68,12 +69,12 @@ async function render () {
   }
 
   main.innerHTML = `
-    <div class="hero" style="padding:10px 0 26px">
-      <div class="kicker">${MODES[l.feeMode] || 'token'}</div>
-      <h1>${esc(l.symbol) || short(token)} <span style="opacity:.6;font-size:.5em">${esc(l.name) || ''}</span></h1>
+    <div class="hero" style="padding:20px 0 26px">
+      <div class="chip">${MODES[l.feeMode] || 'token'}</div>
+      <h1 style="font-size:clamp(2rem,4.5vw,3rem)">${esc(l.symbol) || short(token)} <span class="dim" style="font-size:.5em">${esc(l.name) || ''}</span></h1>
       <p class="lead mono" style="font-size:.85rem;word-break:break-all">${token}
-        <button class="btn white small" id="copy" style="margin-left:8px">copy</button>
-        <a class="btn white small" href="${explorer}/token/${token}" target="_blank" rel="noopener">explorer</a>
+        <button class="btn secondary small" id="copy" style="margin-left:8px">copy</button>
+        <a class="btn secondary small" href="${explorer}/token/${token}" target="_blank" rel="noopener">explorer</a>
       </p>
     </div>
     <div class="card">

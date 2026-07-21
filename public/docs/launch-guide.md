@@ -1,0 +1,47 @@
+# Launch guide
+
+From empty form to live token in five steps.
+
+## 1. Get a wallet on Robinhood Chain
+
+Any injected wallet works: MetaMask, Rabby, Rainbow. Open [/launch](/launch) and hit **Connect wallet**: if Robinhood Chain (4663) is missing, the site offers to add it with one click.
+
+You need enough ETH for the 0.0005 launch fee, gas, and any dev buy you want.
+
+## 2. Fill in the token
+
+Name, ticker, logo URL, description, socials. The logo is a plain link: `ipfs://` links from the pons uploader work best, a regular `https://` image link works too.
+
+**Dev buy** is optional: extra ETH sent with the launch that buys your token in the same transaction. The max wallet at launch is 5% of supply, so there is a natural cap.
+
+## 3. Pick the fee route
+
+This is the robindrop part. Four options, one choice, set forever at launch:
+
+| Mode | Fees go to | Configuration |
+| --- | --- | --- |
+| Keep it | your connected wallet | none |
+| Drop to holders | your holders, in rounds | range, rounds, %, triggers |
+| Team split | wallets you list | addresses + percentages |
+| Buyback and burn | the token itself, then `0x...dEaD` | none |
+
+See [Fee modes](/docs/fee-modes.md) for the details of each.
+
+## 4. Sign the transaction
+
+Hit **Launch token**. For managed modes robindrop first reserves a fee vault (an address you will see in the wallet prompt as the `feeWallet` parameter), then your wallet signs `launchToken()` on the factory:
+
+```
+launchToken(
+  { name, symbol, logo, description, socials, feeWallet },
+  launchConfigId: 0,
+  dexId: 0,
+  salt
+)
+```
+
+Value = 0.0005 ETH launch fee + your dev buy.
+
+## 5. Done
+
+The site waits for the receipt, picks the token address out of the `TokenLaunched` event, and sends you to the token page: market cap, graduation progress, vault balance, schedule, payout history. Trading is live from block one.

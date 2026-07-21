@@ -9,15 +9,15 @@
 <body>
   <div id="nav"></div>
 
-  <main class="wrap section">
-    <div class="hero" style="padding:10px 0 26px">
-      <div class="kicker">launch on robinhood chain via pons</div>
-      <h1>Deploy the token.<br>Pick where the <span class="gold">fees</span> go.</h1>
-      <p class="lead">Fixed 1B supply, locked pool, 0.0005 ETH launch fee. You keep 70% of trading fees as creator. Route them to yourself, to your holders, to a team split, or into a burn.</p>
+  <main class="wrap section" style="padding-top:34px">
+    <div class="hero" style="padding:20px 0 30px">
+      <div class="chip">Launch on Robinhood Chain via pons</div>
+      <h1 style="font-size:clamp(2rem,4.5vw,3rem)">Deploy the token.<br><span class="dim">Pick where the fees go.</span></h1>
+      <p class="lead" style="font-size:1.1rem">Fixed 1B supply, locked pool, 0.0005 ETH launch fee. You keep 70% of trading fees as creator. Route them to yourself, your holders, a team split, or a burn.</p>
     </div>
 
     <div class="card">
-      <h2>1. Token</h2>
+      <h2 style="font-size:1.4rem">1. Token</h2>
       <div class="row">
         <div class="field">
           <label for="f-name">Name</label>
@@ -50,8 +50,8 @@
     </div>
 
     <div class="card">
-      <h2>2. Fee routing</h2>
-      <p style="color:var(--muted);margin-top:-6px">Creator fees are 70% of all trading fees on the pool, forever. Choose who eats.</p>
+      <h2 style="font-size:1.4rem">2. Fee routing</h2>
+      <p style="color:var(--muted);margin-top:-4px">Creator fees are 70% of all trading fees on the pool, forever. Choose who eats.</p>
       <div class="modes" id="modes">
         <div class="mode active" data-mode="default">
           <div class="t">Keep it</div>
@@ -72,10 +72,10 @@
       </div>
 
       <!-- holders config -->
-      <div id="panel-holders" class="card tint" style="margin-top:18px" hidden>
+      <div id="panel-holders" class="card tint" style="margin-top:16px" hidden>
         <h3>Drop settings</h3>
         <div class="chips" id="presets">
-          <button class="chip" data-preset="halving">Halving: 50% each round, cap x2</button>
+          <button class="chip" data-preset="halving">Halving: 50% each round, cap ×2</button>
           <button class="chip" data-preset="fullsend">Full send: 100% at every milestone</button>
           <button class="chip" data-preset="drip">Drip: 20% every 12h</button>
         </div>
@@ -115,7 +115,7 @@
           <div class="field">
             <label for="d-capmode">Cap ladder</label>
             <select id="d-capmode">
-              <option value="multiply">Multiply xN</option>
+              <option value="multiply">Multiply ×N</option>
               <option value="step">Step +$X</option>
             </select>
           </div>
@@ -138,21 +138,21 @@
       </div>
 
       <!-- split config -->
-      <div id="panel-split" class="card tint" style="margin-top:18px" hidden>
+      <div id="panel-split" class="card tint" style="margin-top:16px" hidden>
         <h3>Split recipients</h3>
         <div id="splits"></div>
-        <button class="btn ghost small" id="add-split">+ add wallet</button>
+        <button class="btn secondary small" id="add-split">+ add wallet</button>
         <div class="hint" style="margin-top:8px">Percentages must add up to 100.</div>
       </div>
 
-      <div id="panel-burn" class="card tint" style="margin-top:18px" hidden>
+      <div id="panel-burn" class="card tint" style="margin-top:16px" hidden>
         <h3>Buyback and burn</h3>
         <p style="color:var(--muted);margin:0">Nothing to configure. The vault collects fees, swaps them into your token on the pool and sends everything to <span class="mono">0x...dEaD</span>. Runs continuously once fees cover gas.</p>
       </div>
     </div>
 
     <div class="card">
-      <h2>3. Send it</h2>
+      <h2 style="font-size:1.4rem">3. Send it</h2>
       <div class="statgrid" style="margin-bottom:18px">
         <div class="stat"><div class="k">Launch fee</div><div class="v" id="s-fee">...</div></div>
         <div class="stat"><div class="k">Supply</div><div class="v">1,000,000,000</div></div>
@@ -160,21 +160,15 @@
         <div class="stat"><div class="k">Graduation</div><div class="v">4.2 ETH</div></div>
       </div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center">
-        <button class="btn white" id="connect" style="background:var(--paper-tint);border:1.5px solid var(--line)">Connect wallet</button>
-        <button class="btn gold" id="launch" disabled>Launch token</button>
+        <button class="btn secondary" id="connect">Connect wallet</button>
+        <button class="btn accent" id="launch" disabled>Launch token</button>
         <span id="status" class="hint"></span>
       </div>
-      <p class="hint" style="margin-top:14px">Your wallet signs the launch transaction directly on the pons factory. robindrop never holds your funds. For managed fee modes the creator fee wallet is a robindrop vault, spelled out in <a href="/docs">the docs</a>.</p>
+      <p class="hint" style="margin-top:14px">Your wallet signs the launch transaction directly on the pons factory. robindrop never holds your funds. For managed fee modes the creator fee wallet is a robindrop vault, spelled out in <a href="/docs/">the docs</a>.</p>
     </div>
   </main>
 
-  <footer>
-    <div class="wrap">
-      robindrop, an unofficial layer on pons. Not affiliated with Pons Labs.
-      <div class="fine">Tokens are volatile. Transactions may be irreversible. Nothing here is financial advice.</div>
-    </div>
-  </footer>
-
+  <div id="footer"></div>
   <script type="module" src="/launch.js"></script>
 </body>
 </html>

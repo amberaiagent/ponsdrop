@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>robindrop docs</title>
+  <meta name="description" content="robindrop documentation: launch guide, fee modes, trust model, contracts, self-hosting.">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <style>
+    :root {
+      --base-font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', sans-serif;
+      --base-font-size: 16px;
+      --theme-color: #0071e3;
+      --text-color-base: #1d1d1f;
+      --text-color-secondary: #6e6e73;
+      --sidebar-background: #f5f5f7;
+      --sidebar-width: 280px;
+      --code-font-family: ui-monospace, 'SF Mono', 'JetBrains Mono', monospace;
+    }
+    body { font-family: var(--base-font-family); color: #1d1d1f; -webkit-font-smoothing: antialiased; }
+    .sidebar { background: #f5f5f7; border-right: 1px solid #e8e8ed; padding-top: 18px; }
+    .sidebar > h1 { margin: 0 0 14px; padding: 6px 16px 14px; border-bottom: 1px solid #e8e8ed; }
+    .sidebar > h1 a { color: #1d1d1f; font-weight: 700; font-size: 1.05rem; letter-spacing: -.02em; }
+    .sidebar ul li a { color: #1d1d1f; font-size: .92rem; }
+    .sidebar ul li.active > a { color: #0071e3; border-right: 2px solid #0071e3; font-weight: 600; }
+    .markdown-section { max-width: 760px; }
+    .markdown-section h1, .markdown-section h2, .markdown-section h3 { font-weight: 600; letter-spacing: -.018em; color: #1d1d1f; }
+    .markdown-section h2 { border-bottom: 1px solid #e8e8ed; padding-bottom: .35em; }
+    .markdown-section code { background: #f5f5f7; color: #1d1d1f; border-radius: 6px; font-size: .85em; }
+    .markdown-section pre { background: #f5f5f7; border-radius: 14px; }
+    .markdown-section pre > code { background: #f5f5f7; }
+    .markdown-section tr:nth-child(2n) { background: #fafafa; }
+    .markdown-section table { border-radius: 12px; overflow: hidden; border: 1px solid #e8e8ed; display: table; width: 100%; }
+    .markdown-section td, .markdown-section th { border: none; border-bottom: 1px solid #e8e8ed; }
+    .markdown-section blockquote { border-left: 3px solid #0071e3; background: #f5f5f7; border-radius: 0 12px 12px 0; padding: 2px 18px; }
+    .app-name-link img { height: 26px; }
+    .search { border-bottom: 1px solid #e8e8ed !important; }
+    .search input { background: #fff; border-radius: 10px; font-family: var(--base-font-family); }
+  </style>
+</head>
+<body>
+  <div id="app">Loading docs...</div>
+  <script>
+    window.$docsify = {
+      name: 'robindrop docs',
+      nameLink: '/docs/',
+      loadSidebar: true,
+      subMaxLevel: 2,
+      auto2top: true,
+      search: { placeholder: 'Search the docs', noData: 'Nothing found', depth: 3 },
+      themeColor: '#0071e3',
+    }
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
+</body>
+</html>
