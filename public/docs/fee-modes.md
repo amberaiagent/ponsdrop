@@ -41,7 +41,7 @@ Built-in options ship with addresses copied from each charity's **own official d
 
 Every built-in address is additionally checked to be a plain wallet (EOA), not a contract, so it is valid on any EVM network including Robinhood Chain. Donations are sent on Robinhood Chain: the charity's key controls them there, though the charity may need to add the network to see them.
 
-You can also paste any charity's address yourself. Note that some large charities (Shriners, Save the Children, GiveDirectly) accept crypto only through processors like The Giving Block, DonateStock or Endaoment, which generate a fresh address per donation, so they have no static address to hardcode. If you paste a custom address, make sure it is a plain wallet and not an exchange deposit address or a contract: those can swallow cross-chain funds forever. PonsDrop cannot verify a custom address belongs to who you think it does.
+The list is curated on purpose: only charities with a static, officially published wallet make it in. Some large charities (Shriners, Save the Children, GiveDirectly) accept crypto only through processors like The Giving Block, DonateStock or Endaoment, which generate a fresh address per donation; there is no safe address to hardcode for them, so they are not offered. Want another charity listed? It needs a static address published on the charity's own site: open an issue or PR on GitHub with the source link.
 
 ## Buyback and burn
 

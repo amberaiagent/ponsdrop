@@ -74,15 +74,10 @@ app.post('/api/launch/prepare', (req, res) => {
     entry.splitConfig = v.config
   }
   if (feeMode === 'charity') {
-    const { charityId, address, name: charityName } = req.body.charityConfig || {}
-    if (charityId) {
-      const c = CHARITIES.find(x => x.id === charityId)
-      if (!c) return res.status(400).json({ error: 'unknown charity id' })
-      entry.charityConfig = { id: c.id, name: c.name, address: c.address, url: c.url, source: c.source }
-    } else {
-      if (!/^0x[0-9a-fA-F]{40}$/.test(address || '')) return res.status(400).json({ error: 'charity needs a valid 0x address' })
-      entry.charityConfig = { id: 'custom', name: String(charityName || 'Custom charity').slice(0, 64), address }
-    }
+    const { charityId } = req.body.charityConfig || {}
+    const c = CHARITIES.find(x => x.id === charityId)
+    if (!c) return res.status(400).json({ error: 'pick a charity from the built-in list' })
+    entry.charityConfig = { id: c.id, name: c.name, address: c.address, url: c.url, source: c.source, logo: c.logo }
   }
 
   if (feeMode === 'default') {

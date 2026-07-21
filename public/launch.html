@@ -163,16 +163,8 @@
       <!-- charity config -->
       <div id="panel-charity" class="card tint" style="margin-top:16px" hidden>
         <h3>Pick a charity</h3>
-        <p style="color:var(--muted);margin-top:-4px;font-size:.9rem">Token-side fees are sold into your pool, everything is donated as ETH. Built-in addresses are copied from each charity's own official donation page, sources linked.</p>
-        <div id="charity-list" style="display:grid;gap:10px;margin-bottom:14px"></div>
-        <div class="field" style="margin-bottom:8px">
-          <label for="c-custom-name">Or your own charity</label>
-          <input id="c-custom-name" maxlength="64" placeholder="Charity name (shown on the token page)">
-        </div>
-        <div class="field">
-          <input id="c-custom-addr" class="mono" placeholder="0x... their official Ethereum donation address">
-          <div class="hint">Many charities (St. Jude, Save the Children, GiveDirectly) take crypto through The Giving Block or Endaoment, which generates an address per donation. Get an address from the charity's own site and paste it here. Triple-check it: donations are irreversible.</div>
-        </div>
+        <p style="color:var(--muted);margin-top:-4px;font-size:.9rem">Token-side fees are sold into your pool, everything is donated as ETH. Every address below comes from the charity's own official donation page and is verified on-chain to be a plain wallet, valid on any EVM network.</p>
+        <div id="charity-list" style="display:grid;gap:10px"></div>
       </div>
     </div>
 
