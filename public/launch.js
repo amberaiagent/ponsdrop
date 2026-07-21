@@ -1,4 +1,4 @@
-import { $, $$, renderNav, renderFooter, toast, getConfig, connectWallet, fmtUsd } from '/app.js'
+import { $, $$, renderNav, renderFooter, initNavWallet, setNavAccount, toast, getConfig, connectWallet, fmtUsd } from '/app.js'
 import {
   createWalletClient, createPublicClient, custom, http, parseEther, decodeEventLog, parseAbiItem,
 } from 'https://esm.sh/viem@2.55.4'
@@ -225,13 +225,18 @@ function splitConfig () {
 
 // ---- wallet + launch ---------------------------------------------------
 let account = null
+function setAccount (acc) {
+  account = acc || null
+  $('#connect').textContent = account ? account.slice(0, 6) + '...' + account.slice(-4) : 'Connect wallet'
+  $('#launch').disabled = !account
+}
+initNavWallet(setAccount)
 $('#connect').addEventListener('click', async () => {
   try {
-    account = await connectWallet(cfg)
-    $('#connect').textContent = account.slice(0, 6) + '...' + account.slice(-4)
-    $('#launch').disabled = false
+    setAccount(await connectWallet(cfg))
+    setNavAccount(account)
     toast('Wallet connected')
-  } catch (e) { toast(e.message) }
+  } catch (e) { toast(e.shortMessage || e.message) }
 })
 
 $('#launch').addEventListener('click', async () => {

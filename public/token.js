@@ -1,6 +1,7 @@
-import { renderNav, renderFooter, fmtUsd, fmtEth, short } from '/app.js'
+import { renderNav, renderFooter, initNavWallet, fmtUsd, fmtEth, short } from '/app.js'
 renderNav('explore')
 renderFooter()
+initNavWallet()
 
 const addr = location.pathname.split('/').pop()
 const main = document.getElementById('main')

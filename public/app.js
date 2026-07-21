@@ -21,7 +21,7 @@ export function renderNav (active = '') {
           ${link('/docs/', 'docs', 'Docs')}
         </div>
         <div class="nav-cta">
-          <a class="btn small" href="/launch">Launch</a>
+          <button class="btn small" id="nav-connect">Connect</button>
         </div>
       </div>
     </div>`
@@ -49,6 +49,39 @@ export function renderFooter () {
         </div>
       </div>
     </footer>`
+}
+
+// Nav Connect button, shared by every page. Shows the short address once
+// connected; clicking a connected button copies the address.
+let navAccount = null
+export function setNavAccount (acc) {
+  navAccount = acc || null
+  const btn = $('#nav-connect')
+  if (btn) btn.textContent = navAccount ? short(navAccount) : 'Connect'
+}
+export async function initNavWallet (onChange) {
+  const btn = $('#nav-connect')
+  if (!btn) return
+  const set = (acc) => { setNavAccount(acc); onChange?.(acc || null) }
+  if (window.ethereum) {
+    try {
+      const [acc] = await window.ethereum.request({ method: 'eth_accounts' })
+      if (acc) set(acc)
+    } catch { /* locked wallet */ }
+    window.ethereum.on?.('accountsChanged', (accs) => set(accs[0] || null))
+  }
+  btn.addEventListener('click', async () => {
+    if (navAccount) {
+      try { await navigator.clipboard.writeText(navAccount); toast('Address copied') } catch { /* no clipboard */ }
+      return
+    }
+    if (!window.ethereum) return toast('No wallet found. Install MetaMask or Rabby.')
+    try {
+      const cfg = await getConfig()
+      set(await connectWallet(cfg))
+      toast('Wallet connected')
+    } catch (e) { toast(e.shortMessage || e.message) }
+  })
 }
 
 // Scroll reveal: add .reveal (+ .d1/.d2/.d3 for stagger) to elements.

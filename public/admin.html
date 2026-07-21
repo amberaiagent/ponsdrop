@@ -22,8 +22,9 @@
     <div id="panel" hidden></div>
   </main>
   <script type="module">
-    import { renderNav, toast } from '/app.js'
+    import { renderNav, toast, initNavWallet } from '/app.js'
     renderNav('')
+    initNavWallet()
     let token = sessionStorage.getItem('rd-admin') || ''
     const login = document.getElementById('login')
     const panel = document.getElementById('panel')

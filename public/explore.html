@@ -19,9 +19,10 @@
   </main>
   <div id="footer"></div>
   <script type="module">
-    import { renderNav, renderFooter } from '/app.js'
+    import { renderNav, renderFooter, initNavWallet } from '/app.js'
     renderNav('explore')
     renderFooter()
+    initNavWallet()
 
     const list = document.getElementById('list')
     const gateway = (u) => u && u.startsWith('ipfs://') ? '/api/ipfs/' + u.slice(7).split('/')[0] : u
