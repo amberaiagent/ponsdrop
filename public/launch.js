@@ -101,8 +101,43 @@ $$('#modes .mode').forEach(el => el.addEventListener('click', () => {
   $('#panel-holders').hidden = mode !== 'holders'
   $('#panel-split').hidden = mode !== 'split'
   $('#panel-burn').hidden = mode !== 'burn'
+  $('#panel-charity').hidden = mode !== 'charity'
   if (mode === 'holders') drawPreview()
 }))
+
+// ---- charity picker ----------------------------------------------------
+let charityId = null
+{
+  const list = $('#charity-list')
+  list.innerHTML = (cfg.charities || []).map(c => `
+    <label class="mode" style="display:flex;gap:12px;align-items:flex-start;cursor:pointer">
+      <input type="radio" name="charity" value="${c.id}" style="width:auto;margin-top:4px">
+      <span style="min-width:0">
+        <span style="font-weight:600;display:block">${c.name}</span>
+        <span class="d" style="display:block">${c.blurb}</span>
+        <span class="hint mono" style="word-break:break-all">${c.address}</span>
+        <a class="hint" href="${c.source}" target="_blank" rel="noopener">address source</a>
+      </span>
+    </label>`).join('')
+  list.addEventListener('change', (e) => {
+    charityId = e.target.value
+    $('#c-custom-addr').value = ''
+    $('#c-custom-name').value = ''
+  })
+  for (const id of ['c-custom-addr', 'c-custom-name']) {
+    $('#' + id).addEventListener('input', () => {
+      if ($('#c-custom-addr').value.trim()) {
+        charityId = null
+        $$('#charity-list input').forEach(r => { r.checked = false })
+      }
+    })
+  }
+}
+
+function charityConfig () {
+  if (charityId) return { charityId }
+  return { address: $('#c-custom-addr').value.trim(), name: $('#c-custom-name').value.trim() }
+}
 
 // ---- holders config ----------------------------------------------------
 const PRESETS = {
@@ -221,6 +256,10 @@ $('#launch').addEventListener('click', async () => {
       const c = dropConfig()
       if (c.trigger === 'mcap' && !(c.startCapUsd > 0)) return toast('Set the first round market cap')
     }
+    if (mode === 'charity') {
+      const c = charityConfig()
+      if (!c.charityId && !/^0x[0-9a-fA-F]{40}$/.test(c.address)) return toast('Pick a charity or paste its 0x address')
+    }
 
     $('#launch').disabled = true
     status.textContent = 'Preparing fee vault...'
@@ -233,6 +272,7 @@ $('#launch').addEventListener('click', async () => {
         deployer: account,
         dropConfig: mode === 'holders' ? dropConfig() : undefined,
         splitConfig: mode === 'split' ? splitConfig() : undefined,
+        charityConfig: mode === 'charity' ? charityConfig() : undefined,
       }),
     }).then(r => r.json())
     if (prep.error) throw new Error(prep.error)

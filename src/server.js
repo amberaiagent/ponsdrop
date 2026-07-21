@@ -5,7 +5,7 @@ import crypto from 'node:crypto'
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { formatEther } from 'viem'
 import { PROJECT_ROOT } from './load-env.js'
-import { CHAIN, ADDRESSES, DROP_DEFAULTS, LIMITS } from './config.js'
+import { CHAIN, ADDRESSES, DROP_DEFAULTS, LIMITS, CHARITIES } from './config.js'
 import { allLaunches, getLaunch, upsertLaunch } from './store.js'
 import { createVaultWallet } from './vault.js'
 import { normalizeDropConfig, computeSchedule, nextRound, validateSplitConfig } from './schedule.js'
@@ -15,7 +15,7 @@ import { startIndexer } from './indexer.js'
 const app = express()
 app.use(express.json({ limit: '1mb' }))
 
-const FEE_MODES = ['default', 'holders', 'split', 'burn']
+const FEE_MODES = ['default', 'holders', 'split', 'burn', 'charity']
 
 // Public view of a launch: never expose anything vault-related beyond the address.
 function publicLaunch (l) {
@@ -37,6 +37,7 @@ app.get('/api/config', async (_req, res) => {
     dexId: 0,
     dropDefaults: DROP_DEFAULTS,
     limits: LIMITS,
+    charities: CHARITIES,
     dryRun: process.env.DRY_RUN !== 'false',
   })
 })
@@ -71,6 +72,17 @@ app.post('/api/launch/prepare', (req, res) => {
     const v = validateSplitConfig(splitConfig)
     if (v.error) return res.status(400).json({ error: v.error })
     entry.splitConfig = v.config
+  }
+  if (feeMode === 'charity') {
+    const { charityId, address, name: charityName } = req.body.charityConfig || {}
+    if (charityId) {
+      const c = CHARITIES.find(x => x.id === charityId)
+      if (!c) return res.status(400).json({ error: 'unknown charity id' })
+      entry.charityConfig = { id: c.id, name: c.name, address: c.address, url: c.url, source: c.source }
+    } else {
+      if (!/^0x[0-9a-fA-F]{40}$/.test(address || '')) return res.status(400).json({ error: 'charity needs a valid 0x address' })
+      entry.charityConfig = { id: 'custom', name: String(charityName || 'Custom charity').slice(0, 64), address }
+    }
   }
 
   if (feeMode === 'default') {

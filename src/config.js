@@ -26,6 +26,10 @@ export const FACTORY_START_BLOCK = 8991118n
 export const FACTORY_ABI = abi('factory-abi.json')
 export const LOCKER_ABI = abi('locker-abi.json')
 
+// Built-in charity registry. Addresses are copied from each charity's own
+// official donation page (see `source`), never from third parties.
+export const CHARITIES = abi('charities.json')
+
 export const BLOCKSCOUT_API = 'https://robinhoodchain.blockscout.com/api/v2'
 
 // Platform defaults for the holders-airdrop mode (trench heritage)

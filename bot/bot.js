@@ -8,7 +8,7 @@ import { CHAIN, ADDRESSES } from '../src/config.js'
 import { publicClient, locker, vaultBalances, readMarketCapUsd, rememberPool } from '../src/chain.js'
 import { vaultAccount } from '../src/vault.js'
 import { snapshotHolders } from './holders.js'
-import { DRY_RUN, unwrapWeth, distributableEth, airdropEth, airdropToken, splitFunds, buybackAndBurn } from './distribute.js'
+import { DRY_RUN, unwrapWeth, distributableEth, airdropEth, airdropToken, splitFunds, buybackAndBurn, sellTokenForWeth, donateEth } from './distribute.js'
 import { nextRound } from '../src/schedule.js'
 
 const SITE = process.env.SITE_URL || `http://localhost:${process.env.PORT || 3000}`
@@ -145,6 +145,27 @@ async function processBurn (l, wallet) {
   }
 }
 
+async function processCharity (l, wallet) {
+  const to = l.charityConfig?.address
+  if (!to) { console.error(`[${l.symbol || l.id}] charity mode without an address, skipping`); return }
+  const b = await vaultBalances(l.feeWallet, l.token)
+  if (b.token > 0n) await sellTokenForWeth(wallet, l.token, b.token)
+  const wethNow = DRY_RUN ? b.weth : (await vaultBalances(l.feeWallet, l.token)).weth
+  await unwrapWeth(wallet, wethNow)
+  const eth = distributableEth(DRY_RUN ? b.eth + b.weth : (await vaultBalances(l.feeWallet, l.token)).eth)
+  if (eth < MIN_DISTRIBUTE) return
+  console.log(`[${l.symbol || l.id}] donating ${formatEther(eth)} ETH to ${l.charityConfig.name} (${to})`)
+  const tx = await donateEth(wallet, to, eth)
+  if (!DRY_RUN && tx) {
+    await api(`/api/admin/launches/${l.id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        recordDistribution: { at: new Date().toISOString(), kind: 'charity', charity: l.charityConfig.name, to, ethWei: eth.toString(), txCount: 1 },
+      }),
+    })
+  }
+}
+
 async function tick () {
   let launches
   try {
@@ -155,7 +176,7 @@ async function tick () {
   }
   for (const l of launches) {
     if (l.status !== 'live' || l.paused) continue
-    if (!['holders', 'split', 'burn'].includes(l.feeMode)) continue
+    if (!['holders', 'split', 'burn', 'charity'].includes(l.feeMode)) continue
     if (!l.token || !l.feeWallet) continue
     const wallet = walletFor(l.feeWallet)
     if (!wallet) { console.error(`[bot] no vault key for ${l.feeWallet} (${l.id})`); continue }
@@ -165,6 +186,7 @@ async function tick () {
       if (l.feeMode === 'holders') await processHolders(l, wallet)
       else if (l.feeMode === 'split') await processSplit(l, wallet)
       else if (l.feeMode === 'burn') await processBurn(l, wallet)
+      else if (l.feeMode === 'charity') await processCharity(l, wallet)
     } catch (e) {
       console.error(`[bot] ${l.id}:`, e.shortMessage || e.message)
     }

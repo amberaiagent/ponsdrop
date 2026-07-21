@@ -4,7 +4,7 @@ renderFooter()
 
 const addr = location.pathname.split('/').pop()
 const main = document.getElementById('main')
-const MODES = { holders: 'Drop to holders', split: 'Split fees', burn: 'Buyback and burn', default: 'Dev keeps fees', external: 'Launched outside PonsDrop' }
+const MODES = { holders: 'Drop to holders', split: 'Split fees', burn: 'Buyback and burn', charity: 'Fees donated to charity', default: 'Dev keeps fees', external: 'Launched outside PonsDrop' }
 
 async function render () {
   const data = await fetch('/api/token/' + addr).then(r => r.json())
@@ -46,7 +46,7 @@ async function render () {
           ${l.distributions.map(d => `
             <tr>
               <td class="mono">${(d.at || '').slice(0, 16).replace('T', ' ')}</td>
-              <td>${d.round ? 'Round ' + d.round + ' to ' + d.holders + ' holders' : (d.kind || '')}</td>
+              <td>${d.round ? 'Round ' + d.round + ' to ' + d.holders + ' holders' : (d.kind === 'charity' ? 'Donated to ' + esc(d.charity || 'charity') : (d.kind || ''))}</td>
               <td class="mono">${d.ethWei ? fmtEth(Number(d.ethWei) / 1e18) : (d.wethWei ? fmtEth(Number(d.wethWei) / 1e18) : '')}</td>
               <td class="mono">${d.txCount ?? ''}</td>
             </tr>`).join('')}

@@ -78,6 +78,35 @@ export async function splitFunds (wallet, token, splits, ethWei, tokenAmount) {
   return txs
 }
 
+// Sell token-side fees into WETH on the launch pool. Used by the charity
+// mode so the whole donation arrives as ETH instead of a random memecoin.
+export async function sellTokenForWeth (wallet, token, amount) {
+  if (amount === 0n) return
+  await send(wallet, `approve router for ${formatEther(amount)} tokens`, () =>
+    wallet.writeContract({ address: token, abi: ERC20_ABI, functionName: 'approve', args: [SWAP_ROUTER, amount] }))
+  await send(wallet, `sell ${formatEther(amount)} tokens -> WETH`, () =>
+    wallet.writeContract({
+      address: SWAP_ROUTER,
+      abi: ROUTER_ABI,
+      functionName: 'exactInputSingle',
+      args: [{
+        tokenIn: token,
+        tokenOut: ADDRESSES.weth,
+        fee: POOL_FEE,
+        recipient: wallet.account.address,
+        amountIn: amount,
+        amountOutMinimum: 0n,
+        sqrtPriceLimitX96: 0n,
+      }],
+    }))
+}
+
+export async function donateEth (wallet, to, amount) {
+  if (amount === 0n) return null
+  return send(wallet, `donate ${formatEther(amount)} ETH -> ${to}`, () =>
+    wallet.sendTransaction({ to, value: amount }))
+}
+
 // Buyback and burn: token-side fees go straight to the dead address,
 // WETH-side fees are swapped into the token on the launch pool, then burned.
 export async function buybackAndBurn (wallet, token, wethAmount, tokenAmount) {

@@ -16,7 +16,7 @@ Name, ticker, logo URL, description, socials. The logo is a plain link: `ipfs://
 
 ## 3. Pick the fee route
 
-This is the PonsDrop part. Four options, one choice, set forever at launch:
+This is the PonsDrop part. Five options, one choice, set forever at launch:
 
 | Mode | Fees go to | Configuration |
 | --- | --- | --- |
@@ -24,6 +24,7 @@ This is the PonsDrop part. Four options, one choice, set forever at launch:
 | Drop to holders | your holders, in rounds | range, rounds, %, triggers |
 | Split fees | wallets you list | addresses + percentages |
 | Buyback and burn | the token itself, then `0x...dEaD` | none |
+| Donate to charity | a charity, as ETH | pick built-in or paste an address |
 
 See [Fee modes](fee-modes.md) for the details of each.
 

@@ -1,0 +1,29 @@
+[
+  {
+    "id": "internet-archive",
+    "name": "Internet Archive",
+    "blurb": "Non-profit digital library preserving the web, books and culture for everyone",
+    "url": "https://archive.org",
+    "address": "0x1971837a3df07b01e30b313e6f3614b85cebc08a",
+    "source": "https://archive.org/donate/cryptocurrency",
+    "verifiedAt": "2026-07-21"
+  },
+  {
+    "id": "eff",
+    "name": "Electronic Frontier Foundation",
+    "blurb": "Defends digital privacy, security and free expression since 1990",
+    "url": "https://www.eff.org",
+    "address": "0x1ca9EB2a5C213d417269134b80111F57e1644105",
+    "source": "https://www.eff.org/pages/cryptocurrency-donations",
+    "verifiedAt": "2026-07-21"
+  },
+  {
+    "id": "fpf",
+    "name": "Freedom of the Press Foundation",
+    "blurb": "Protects and defends public-interest journalism",
+    "url": "https://freedom.press",
+    "address": "0xC423F8aEDf1753Bc0ab58e455B0b5421CafE949e",
+    "source": "https://freedom.press/donate/cryptocurrency/",
+    "verifiedAt": "2026-07-21"
+  }
+]

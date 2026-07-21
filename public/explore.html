@@ -32,6 +32,7 @@
       if (l.feeMode === 'holders') return ['Fees drop to holders', 'gold']
       if (l.feeMode === 'split') return [`Fees split across ${l.splitConfig?.length || 'several'} wallets`, 'gold']
       if (l.feeMode === 'burn') return ['Fees buy back and burn', 'gold']
+      if (l.feeMode === 'charity') return [`Fees donated to ${l.charityConfig?.name || 'charity'}`, 'gold']
       return ['Fees to the dev', '']
     }
 

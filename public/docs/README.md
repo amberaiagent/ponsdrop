@@ -8,6 +8,7 @@ Every pons token pays its creator 70% of all trading fees on its pool, forever. 
 - **Drop to holders**: fees pool in a vault and rain on your holders in configurable rounds.
 - **Split fees**: fees split automatically between up to 20 wallets.
 - **Buyback and burn**: fees market-buy your token and burn it.
+- **Donate to charity**: fees are converted to ETH and donated on-chain to a charity you pick.
 
 The launch itself is a single transaction your wallet signs on the pons factory. PonsDrop never holds your funds, your token, or your pool.
 

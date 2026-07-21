@@ -21,6 +21,24 @@ Full detail on triggers, exclusions and edge cases: [Drop to holders](drop-to-ho
 
 Up to 20 wallets, each with a percentage, summing to exactly 100. The bot forwards both the ETH side and the token side of collected fees by those shares whenever the vault holds enough to be worth the gas. Good for splitting with a co-dev, an artist, a KOL deal, or a treasury.
 
+## Donate to charity
+
+Creator fees become public, on-chain donations:
+
+1. Token-side fees are sold into your own pool for WETH.
+2. Everything is unwrapped to ETH and sent to the charity's address whenever the vault holds enough to be worth the gas.
+3. Each donation appears in the token's payout history with the charity's name and the transaction.
+
+Built-in options ship with addresses copied from each charity's **own official donation page** (sources are linked in the launch form):
+
+| Charity | Address source |
+| --- | --- |
+| Internet Archive | [archive.org/donate/cryptocurrency](https://archive.org/donate/cryptocurrency) |
+| Electronic Frontier Foundation | [eff.org/pages/cryptocurrency-donations](https://www.eff.org/pages/cryptocurrency-donations) |
+| Freedom of the Press Foundation | [freedom.press/donate/cryptocurrency](https://freedom.press/donate/cryptocurrency/) |
+
+You can also paste any charity's address yourself. Note that many large charities (St. Jude, Save the Children, GiveDirectly) accept crypto only through processors like The Giving Block or Endaoment, which generate a fresh address per donation, so they have no static address to hardcode. Get an address from the charity's own site and triple-check it: donations are irreversible, and PonsDrop cannot verify that a custom address belongs to who you think it does.
+
 ## Buyback and burn
 
 Two flows, both automatic:
