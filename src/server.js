@@ -2,6 +2,7 @@ import './load-env.js'
 import express from 'express'
 import path from 'node:path'
 import crypto from 'node:crypto'
+import { writeFileSync, mkdirSync } from 'node:fs'
 import { formatEther } from 'viem'
 import { PROJECT_ROOT } from './load-env.js'
 import { CHAIN, ADDRESSES, DROP_DEFAULTS, LIMITS } from './config.js'
@@ -104,6 +105,27 @@ app.post('/api/launch/confirm', (req, res) => {
     logo: logo || draft.logo,
   })
   res.json({ ok: true, id: draft.id })
+})
+
+// Logo upload: try the pons IPFS uploader first (best for indexers), fall
+// back to serving the file ourselves from public/uploads.
+app.post('/api/upload/logo', express.raw({ type: 'image/*', limit: '4mb' }), async (req, res) => {
+  if (!req.body?.length) return res.status(400).json({ error: 'no image data' })
+  try {
+    const form = new FormData()
+    form.append('image', new Blob([req.body], { type: req.get('content-type') || 'image/png' }), 'logo.png')
+    const r = await fetch('https://www.ponsfamily.com/api/ipfs/image', { method: 'POST', body: form, signal: AbortSignal.timeout(15000) })
+    if (r.ok) {
+      const j = await r.json().catch(() => null)
+      const url = j?.url || j?.ipfs || (j?.cid && `ipfs://${j.cid}`) || (j?.hash && `ipfs://${j.hash}`)
+      if (url) return res.json({ url, via: 'pons' })
+    }
+  } catch { /* pons unreachable: keep the launch flow alive with local hosting */ }
+  const name = crypto.randomBytes(8).toString('hex') + '.png'
+  const dir = path.join(PROJECT_ROOT, 'public', 'uploads')
+  mkdirSync(dir, { recursive: true })
+  writeFileSync(path.join(dir, name), req.body)
+  res.json({ url: `${req.protocol}://${req.get('host')}/uploads/${name}`, via: 'local' })
 })
 
 // schedule preview for the launch form infographic

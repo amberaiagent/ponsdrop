@@ -1,6 +1,6 @@
 # Contracts and network
 
-Everything robindrop talks to on-chain, all verified on Blockscout.
+Everything PonsDrop talks to on-chain, all verified on Blockscout.
 
 ## Network
 
@@ -23,7 +23,7 @@ Everything robindrop talks to on-chain, all verified on Blockscout.
 
 Launch config 0 (the only one, used for all launches): WETH pair, 1B supply, graduation threshold 4.2 ETH, pool fee 1%, max wallet 5%, max tx 5.5%, 2 restriction blocks. Fee split on the active locker: creator 70 / protocol 30.
 
-## Functions robindrop uses
+## Functions PonsDrop uses
 
 **Factory**
 

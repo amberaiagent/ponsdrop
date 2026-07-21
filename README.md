@@ -1,4 +1,4 @@
-# robindrop
+# PonsDrop
 
 Launch fixed-supply tokens on Robinhood Chain through pons, and route the creator
 fees wherever you want at launch: your own wallet, round drops to your holders,
@@ -11,7 +11,7 @@ Rob the dev. Feed the holders.
 - **Launch** (`/launch`): pons-style create form, injected wallet, signs
   `launchToken()` on the pons factory directly. Fee routing is picked in the form.
 - **Fee modes:**
-  - **Keep it**: fees to your connected wallet, robindrop untouched.
+  - **Keep it**: fees to your connected wallet, PonsDrop untouched.
   - **Drop to holders** (trench mode): fees pool in a vault and are airdropped to
     holders `#N` to `#M` (up to `#1000`) in 1 to 30 rounds. Rounds trigger on a
     market cap ladder (`x2`/`x3`/`+$X` from a start cap) or on a timer. Each round

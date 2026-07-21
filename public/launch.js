@@ -47,6 +47,57 @@ const LAUNCH_ABI = [{
 
 const TOKEN_LAUNCHED = parseAbiItem('event TokenLaunched(address indexed token, address indexed deployer, address indexed dexFactory, address pairToken, address pool, uint256 dexId, uint256 launchConfigId, uint256 positionId, uint256 restrictionsEndBlock, uint256 initialBuyAmount)')
 
+// ---- prefill from the landing quick-start card -------------------------
+{
+  const q = new URLSearchParams(location.search)
+  if (q.get('name')) $('#f-name').value = q.get('name')
+  if (q.get('symbol')) $('#f-symbol').value = q.get('symbol')
+  if (q.get('desc')) $('#f-desc').value = q.get('desc')
+}
+
+// ---- logo upload: crop to 1:1, cap at 500px, send to the server --------
+$('#logo-pick').addEventListener('click', () => $('#f-logo-file').click())
+$('#f-logo-file').addEventListener('change', async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+  const status = $('#logo-status')
+  try {
+    const img = await new Promise((resolve, reject) => {
+      const i = new Image()
+      i.onload = () => resolve(i)
+      i.onerror = () => reject(new Error('Cannot read that image'))
+      i.src = URL.createObjectURL(file)
+    })
+    const side = Math.min(img.naturalWidth, img.naturalHeight)
+    if (side < 250) throw new Error(`Too small: ${img.naturalWidth}×${img.naturalHeight}. Minimum is 250×250.`)
+    const out = Math.min(500, side)
+    const canvas = document.createElement('canvas')
+    canvas.width = canvas.height = out
+    const sx = (img.naturalWidth - side) / 2
+    const sy = (img.naturalHeight - side) / 2
+    canvas.getContext('2d').drawImage(img, sx, sy, side, side, 0, 0, out, out)
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/png'))
+
+    status.textContent = 'Uploading...'
+    const res = await fetch('/api/upload/logo', { method: 'POST', headers: { 'content-type': 'image/png' }, body: blob })
+    const j = await res.json()
+    if (!res.ok || !j.url) throw new Error(j.error || 'Upload failed')
+    $('#f-logo').value = j.url
+    $('#logo-preview').src = canvas.toDataURL('image/png')
+    $('#logo-preview').hidden = false
+    status.textContent = j.via === 'pons' ? `Uploaded to IPFS, ${out}×${out}` : `Uploaded, ${out}×${out}`
+  } catch (err) {
+    status.textContent = err.message
+    toast(err.message)
+  } finally {
+    e.target.value = ''
+  }
+})
+$('#f-logo').addEventListener('input', () => {
+  const v = $('#f-logo').value.trim()
+  if (/^https?:\/\//.test(v)) { $('#logo-preview').src = v; $('#logo-preview').hidden = false }
+})
+
 // ---- fee mode selection ------------------------------------------------
 let mode = 'default'
 $$('#modes .mode').forEach(el => el.addEventListener('click', () => {

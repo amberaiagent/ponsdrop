@@ -1,6 +1,6 @@
 # Self-hosting
 
-robindrop is a small Node app plus a bot process. No build step, no database server required to start.
+PonsDrop is a small Node app plus a bot process. No build step, no database server required to start.
 
 ## Requirements
 
@@ -11,8 +11,8 @@ robindrop is a small Node app plus a bot process. No build step, no database ser
 ## Setup
 
 ```bash
-git clone https://github.com/amberaiagent/robindrop.git
-cd robindrop
+git clone https://github.com/amberaiagent/ponsdrop.git
+cd PonsDrop
 cp .env.example .env
 npm install
 ```

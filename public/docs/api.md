@@ -10,7 +10,7 @@ Chain info, contract addresses, live launch fee, drop defaults and limits.
 
 ### `GET /api/launches`
 
-Every launch known to the indexer, newest first. robindrop launches carry their `feeMode` and config; foreign launches show as `external`.
+Every launch known to the indexer, newest first. PonsDrop launches carry their `feeMode` and config; foreign launches show as `external`.
 
 ### `GET /api/token/:address`
 

@@ -16,7 +16,7 @@ Name, ticker, logo URL, description, socials. The logo is a plain link: `ipfs://
 
 ## 3. Pick the fee route
 
-This is the robindrop part. Four options, one choice, set forever at launch:
+This is the PonsDrop part. Four options, one choice, set forever at launch:
 
 | Mode | Fees go to | Configuration |
 | --- | --- | --- |
@@ -29,7 +29,7 @@ See [Fee modes](/docs/fee-modes.md) for the details of each.
 
 ## 4. Sign the transaction
 
-Hit **Launch token**. For managed modes robindrop first reserves a fee vault (an address you will see in the wallet prompt as the `feeWallet` parameter), then your wallet signs `launchToken()` on the factory:
+Hit **Launch token**. For managed modes PonsDrop first reserves a fee vault (an address you will see in the wallet prompt as the `feeWallet` parameter), then your wallet signs `launchToken()` on the factory:
 
 ```
 launchToken(

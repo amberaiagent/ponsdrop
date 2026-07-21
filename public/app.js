@@ -12,7 +12,7 @@ export function renderNav (active = '') {
       <div class="inner">
         <a class="wordmark" href="/">
           <img class="nav-logo" src="/logo.png" alt="">
-          robindrop
+          PonsDrop
         </a>
         <div class="pillnav">
           ${link('/', 'home', 'Home')}
@@ -34,7 +34,7 @@ export function renderFooter () {
     <footer>
       <div class="wrap">
         <div class="cols">
-          <div><strong style="color:var(--ink)">robindrop</strong><br>Launch on pons. Route the fees.</div>
+          <div><strong style="color:var(--ink)">PonsDrop</strong><br>Launch on pons. Route the fees.</div>
           <div class="links">
             <a href="/launch">Launch</a>
             <a href="/explore">Explore</a>

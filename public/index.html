@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>robindrop: launch tokens, route the fees</title>
+  <title>PonsDrop: launch tokens, route the fees</title>
   <meta name="description" content="Launch tokens on Robinhood Chain through pons and route creator fees at launch: round drops to holders, fee splits or buyback and burn.">
   <link rel="icon" type="image/png" href="/logo.png">
   <link rel="stylesheet" href="/style.css">
@@ -38,7 +38,7 @@
             <div class="orb" style="width:34px;height:34px;top:24%;left:6%;animation-delay:-5s"></div>
             <div class="orb" style="width:52px;height:52px;bottom:10%;right:4%;animation-delay:-3.5s"></div>
             <div class="orb" style="width:24px;height:24px;bottom:24%;left:16%;animation-delay:-6.5s"></div>
-            <img class="logo-hero" src="/logo.png" alt="robindrop logo">
+            <img class="logo-hero" src="/logo.png" alt="PonsDrop logo">
           </div>
         </div>
 
@@ -55,9 +55,9 @@
       <div class="wrap">
         <div class="split">
           <div class="reveal">
-            <div class="eyebrow">Why robindrop</div>
+            <div class="eyebrow">Why PonsDrop</div>
             <h2>Everything pons launches have, plus fee routing that runs itself.</h2>
-            <p style="color:var(--muted)">Same factory, same locked pool, same graduation. The difference is one field: the creator fee wallet. Point it at a robindrop vault and the fees follow rules you set once, at launch.</p>
+            <p style="color:var(--muted)">Same factory, same locked pool, same graduation. The difference is one field: the creator fee wallet. Point it at a PonsDrop vault and the fees follow rules you set once, at launch.</p>
             <ul style="color:var(--muted);line-height:1.9;padding-left:20px;margin:0">
               <li>Round drops to holders, trench style</li>
               <li>Cap-ladder or timer triggers</li>
@@ -65,14 +65,19 @@
               <li>Buyback and burn on your own pool</li>
             </ul>
           </div>
-          <div class="card glass mock reveal d1">
+          <div class="card glass reveal d1">
             <h3 style="margin-bottom:16px">Launch token</h3>
-            <div class="mockrow"><div class="ph"></div><div class="ph"></div></div>
-            <div class="mockrow"><div class="ph"></div></div>
-            <div class="mockrow"><div class="ph tall"></div></div>
-            <div class="mockline"><span>Fee route</span><span style="color:var(--accent);font-weight:600">Drop to holders</span></div>
-            <div class="mockline"><span>Holders</span><span class="mono">#1 – #200</span></div>
-            <div class="mockline"><span>Rounds</span><span class="mono">10 × 50%, cap ×2</span></div>
+            <div class="mockrow" style="display:flex;gap:10px;margin-bottom:10px">
+              <input id="q-name" maxlength="48" placeholder="Token name">
+              <input id="q-symbol" maxlength="12" placeholder="TICKER" style="text-transform:uppercase;max-width:130px">
+            </div>
+            <div style="margin-bottom:14px">
+              <textarea id="q-desc" rows="2" maxlength="500" placeholder="What is this coin about?"></textarea>
+            </div>
+            <div class="mockline"><span>Fee route</span><span style="color:var(--accent);font-weight:600">you pick next</span></div>
+            <div class="mockline"><span>Launch fee</span><span class="mono">0.0005 ETH</span></div>
+            <div class="mockline" style="border-bottom:none"><span>Creator fees</span><span class="mono">70%, forever</span></div>
+            <button class="btn" id="q-launch" style="width:100%;margin-top:14px">Launch token</button>
           </div>
         </div>
       </div>
@@ -115,7 +120,7 @@
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="3"/><path d="M16.5 2.8H6a3.5 3.5 0 0 0-3.5 3.4"/><circle cx="16.8" cy="12.5" r="1.2" fill="currentColor" stroke="none"/></svg>
             </div>
             <h3>Keep it</h3>
-            <p style="color:var(--muted);margin:0">Fees to your own wallet. The default pons behavior, zero robindrop involvement.</p>
+            <p style="color:var(--muted);margin:0">Fees to your own wallet. The default pons behavior, zero PonsDrop involvement.</p>
           </div>
           <div class="card reveal d1">
             <div class="icon-dot">
@@ -159,6 +164,24 @@
   </main>
 
   <div id="footer"></div>
-  <script type="module">import { renderNav, renderFooter, initReveal } from '/app.js'; renderNav('home'); renderFooter(); initReveal()</script>
+  <script type="module">
+    import { renderNav, renderFooter, initReveal } from '/app.js'
+    renderNav('home'); renderFooter(); initReveal()
+    // Quick-start card: carry the fields into the launch form.
+    const go = () => {
+      const p = new URLSearchParams()
+      const name = document.getElementById('q-name').value.trim()
+      const symbol = document.getElementById('q-symbol').value.trim().toUpperCase()
+      const desc = document.getElementById('q-desc').value.trim()
+      if (name) p.set('name', name)
+      if (symbol) p.set('symbol', symbol)
+      if (desc) p.set('desc', desc)
+      location.href = '/launch' + (p.size ? '?' + p.toString() : '')
+    }
+    document.getElementById('q-launch').addEventListener('click', go)
+    for (const id of ['q-name', 'q-symbol']) {
+      document.getElementById(id).addEventListener('keydown', e => { if (e.key === 'Enter') go() })
+    }
+  </script>
 </body>
 </html>

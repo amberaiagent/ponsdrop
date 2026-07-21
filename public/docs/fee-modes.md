@@ -1,14 +1,14 @@
 # Fee modes
 
-Creator fees on pons are 70% of all trading fees on the token's pool. The other 30% goes to the pons protocol. robindrop routes the 70%.
+Creator fees on pons are 70% of all trading fees on the token's pool. The other 30% goes to the pons protocol. PonsDrop routes the 70%.
 
 ## Keep it
 
-The default. `feeWallet` is your connected wallet, fees accrue in the locker and you claim them on pons whenever you like. robindrop is not involved at all: this is identical to launching on pons directly.
+The default. `feeWallet` is your connected wallet, fees accrue in the locker and you claim them on pons whenever you like. PonsDrop is not involved at all: this is identical to launching on pons directly.
 
 ## Drop to holders
 
-The trench mode. Fees accumulate in a robindrop vault and get airdropped to your holders in rounds. Fully configurable:
+The trench mode. Fees accumulate in a PonsDrop vault and get airdropped to your holders in rounds. Fully configurable:
 
 - **Holder range**: ranks #1 to #1000 by balance, e.g. "#1 to #200" or "#50 to #500".
 - **Rounds**: 1 to 30.
@@ -30,4 +30,4 @@ Two flows, both automatic:
 
 Net effect: constant buy pressure funded by trading, and a supply that only shrinks. Runs continuously, no schedule.
 
-> One mode per token, chosen at launch. The locker does expose `setFeeRedirect`, so a later version may allow the fee recipient to re-point the stream; today robindrop keeps it simple and immutable.
+> One mode per token, chosen at launch. The locker does expose `setFeeRedirect`, so a later version may allow the fee recipient to re-point the stream; today PonsDrop keeps it simple and immutable.
