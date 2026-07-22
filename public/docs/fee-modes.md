@@ -2,8 +2,6 @@
 
 Creator fees on pons are 70% of all trading fees on the token's pool. The other 30% goes to the pons protocol. PonsDrop routes the 70%.
 
-> PonsDrop only ever distributes the **ETH-denominated** creator fees. Fees also accrue in the token itself, and those stay untouched in the vault: the bot never sells, transfers or burns your launch supply, so a managed launch never dumps on its own pool.
-
 ## Keep it
 
 The default. `feeWallet` is your connected wallet, fees accrue in the locker and you claim them on pons whenever you like. PonsDrop is not involved at all: this is identical to launching on pons directly.
@@ -27,10 +25,9 @@ Up to 20 wallets, each with a percentage, summing to exactly 100. The bot forwar
 
 Creator fees become public, on-chain donations:
 
-1. The ETH-side fees are unwrapped and sent to the charity's address whenever the vault holds enough to be worth the gas.
-2. Each donation appears in the token's payout history with the charity's name and the transaction.
-
-Token-side fees are not sold for the donation; they rest in the vault so the charity token is never dumped into its own pool.
+1. Token-side fees are sold into your own pool for WETH.
+2. Everything is unwrapped to ETH and sent to the charity's address whenever the vault holds enough to be worth the gas.
+3. Each donation appears in the token's payout history with the charity's name and the transaction.
 
 Built-in options ship with addresses copied from each charity's **own official donation page** (sources are linked in the launch form):
 
