@@ -102,8 +102,25 @@ $$('#modes .mode').forEach(el => el.addEventListener('click', () => {
   $('#panel-split').hidden = mode !== 'split'
   $('#panel-burn').hidden = mode !== 'burn'
   $('#panel-charity').hidden = mode !== 'charity'
+  syncDevBuy()
   if (mode === 'holders') drawPreview()
 }))
+
+// pons routes the initial buy to feeWallet. For managed modes feeWallet is the
+// vault, so a dev buy would go to the vault instead of the dev. Disable it and
+// explain; devs buy from their own wallet after launch.
+function syncDevBuy () {
+  const input = $('#f-devbuy')
+  const note = $('#devbuy-note')
+  const managed = mode !== 'default'
+  input.disabled = managed
+  if (managed) input.value = ''
+  input.style.opacity = managed ? '0.5' : '1'
+  if (note) note.textContent = managed
+    ? 'Disabled for this fee mode: pons sends the dev buy to the fee vault, not to you. Buy from your own wallet right after launch instead.'
+    : 'Sent on top of the launch fee. Max wallet is 5% of supply.'
+}
+syncDevBuy()
 
 // ---- charity picker ----------------------------------------------------
 let charityId = null
@@ -283,7 +300,10 @@ $('#launch').addEventListener('click', async () => {
       feeWallet,
     }
     const salt = '0x' + [...crypto.getRandomValues(new Uint8Array(32))].map(b => b.toString(16).padStart(2, '0')).join('')
-    const devBuy = Number($('#f-devbuy').value || 0)
+    // pons sends the initial buy to feeWallet. In managed modes that is the
+    // vault, so a dev buy would land in the vault, not with the dev. We force
+    // it off here; the dev buys from their own wallet after launch instead.
+    const devBuy = mode === 'default' ? Number($('#f-devbuy').value || 0) : 0
     const value = parseEther(cfg.launchFeeEth || '0.0005') + parseEther(String(devBuy || 0))
 
     status.textContent = 'Confirm in your wallet...'
