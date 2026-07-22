@@ -44,22 +44,9 @@ export async function airdropEth (wallet, recipients, totalWei) {
   return { txs, perWei: per.toString() }
 }
 
-export async function airdropToken (wallet, token, recipients, totalAmount) {
-  const empty = { txs: [], perWei: '0' }
-  if (recipients.length === 0 || totalAmount === 0n) return empty
-  const per = totalAmount / BigInt(recipients.length)
-  if (per === 0n) return empty
-  const txs = []
-  for (const to of recipients) {
-    const h = await send(wallet, `airdrop ${formatEther(per)} tokens -> ${to}`, () =>
-      wallet.writeContract({ address: token, abi: ERC20_ABI, functionName: 'transfer', args: [to, per] }))
-    if (h) txs.push(h)
-  }
-  return { txs, perWei: per.toString() }
-}
-
-// Percentage split to fixed recipients, for ETH and token balances.
-export async function splitFunds (wallet, token, splits, ethWei, tokenAmount) {
+// Percentage split of the ETH fees to fixed recipients. Token-side fees are
+// never touched, so a split launch never sells its own supply.
+export async function splitFunds (wallet, splits, ethWei) {
   const txs = []
   for (const { address, pct } of splits) {
     const ethShare = (ethWei * BigInt(pct)) / 100n
@@ -68,37 +55,8 @@ export async function splitFunds (wallet, token, splits, ethWei, tokenAmount) {
         wallet.sendTransaction({ to: address, value: ethShare }))
       if (h) txs.push(h)
     }
-    const tokShare = (tokenAmount * BigInt(pct)) / 100n
-    if (tokShare > 0n) {
-      const h = await send(wallet, `split ${pct}% tokens -> ${address}`, () =>
-        wallet.writeContract({ address: token, abi: ERC20_ABI, functionName: 'transfer', args: [address, tokShare] }))
-      if (h) txs.push(h)
-    }
   }
   return txs
-}
-
-// Sell token-side fees into WETH on the launch pool. Used by the charity
-// mode so the whole donation arrives as ETH instead of a random memecoin.
-export async function sellTokenForWeth (wallet, token, amount) {
-  if (amount === 0n) return
-  await send(wallet, `approve router for ${formatEther(amount)} tokens`, () =>
-    wallet.writeContract({ address: token, abi: ERC20_ABI, functionName: 'approve', args: [SWAP_ROUTER, amount] }))
-  await send(wallet, `sell ${formatEther(amount)} tokens -> WETH`, () =>
-    wallet.writeContract({
-      address: SWAP_ROUTER,
-      abi: ROUTER_ABI,
-      functionName: 'exactInputSingle',
-      args: [{
-        tokenIn: token,
-        tokenOut: ADDRESSES.weth,
-        fee: POOL_FEE,
-        recipient: wallet.account.address,
-        amountIn: amount,
-        amountOutMinimum: 0n,
-        sqrtPriceLimitX96: 0n,
-      }],
-    }))
 }
 
 export async function donateEth (wallet, to, amount) {
@@ -107,15 +65,11 @@ export async function donateEth (wallet, to, amount) {
     wallet.sendTransaction({ to, value: amount }))
 }
 
-// Buyback and burn: token-side fees go straight to the dead address,
-// WETH-side fees are swapped into the token on the launch pool, then burned.
-export async function buybackAndBurn (wallet, token, wethAmount, tokenAmount) {
+// Buyback and burn: WETH-side fees are swapped into the token on the launch
+// pool and the bought tokens go straight to the dead address. The token-side
+// fees already in the vault are left untouched.
+export async function buybackAndBurn (wallet, token, wethAmount) {
   const txs = []
-  if (tokenAmount > 0n) {
-    const h = await send(wallet, `burn ${formatEther(tokenAmount)} tokens`, () =>
-      wallet.writeContract({ address: token, abi: ERC20_ABI, functionName: 'transfer', args: [ADDRESSES.dead, tokenAmount] }))
-    if (h) txs.push(h)
-  }
   if (wethAmount > 0n) {
     await send(wallet, `approve router for ${formatEther(wethAmount)} WETH`, () =>
       wallet.writeContract({ address: ADDRESSES.weth, abi: WETH_ABI, functionName: 'approve', args: [SWAP_ROUTER, wethAmount] }))

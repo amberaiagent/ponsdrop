@@ -6,7 +6,7 @@ The flagship mode, inherited from trench: hold the token, get paid.
 
 1. The bot claims accrued creator fees from the locker (`collectFees`), unwraps WETH into ETH.
 2. When a round's trigger fires, it snapshots holders ranked by balance from the Blockscout API.
-3. The round's % of the vault is split **evenly** across everyone in your chosen range and sent as plain ETH transfers. Token-side fees are split the same way.
+3. The round's % of the ETH in the vault is split **evenly** across everyone in your chosen range and sent as plain ETH transfers. Token-side fees stay in the vault; holders are paid in ETH, never in the launch token, so a drop never dumps supply.
 4. The round, its amounts and its transaction count are recorded on the token page.
 
 ## Triggers

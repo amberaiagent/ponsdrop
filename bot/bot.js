@@ -8,7 +8,12 @@ import { CHAIN, ADDRESSES } from '../src/config.js'
 import { publicClient, locker, vaultBalances, readMarketCapUsd, rememberPool } from '../src/chain.js'
 import { vaultAccount } from '../src/vault.js'
 import { snapshotHolders } from './holders.js'
-import { DRY_RUN, unwrapWeth, distributableEth, airdropEth, airdropToken, splitFunds, buybackAndBurn, sellTokenForWeth, donateEth } from './distribute.js'
+import { DRY_RUN, unwrapWeth, distributableEth, airdropEth, splitFunds, buybackAndBurn, donateEth } from './distribute.js'
+
+// PonsDrop only ever distributes the ETH-denominated creator fees. The
+// token-side fees that also accrue in the vault are left untouched: we never
+// sell, transfer or burn the launch token, so a managed launch never puts
+// sell pressure on its own pool. Token-side fees simply rest in the vault.
 import { nextRound } from '../src/schedule.js'
 
 const SITE = process.env.SITE_URL || `http://localhost:${process.env.PORT || 3000}`
@@ -75,8 +80,7 @@ async function processHolders (l, wallet) {
   await unwrapWeth(wallet, b.weth)
   const ethAll = distributableEth(DRY_RUN ? b.eth + b.weth : (await vaultBalances(l.feeWallet, l.token)).eth)
   const ethShare = (ethAll * BigInt(next.pct)) / 100n
-  const tokShare = (b.token * BigInt(next.pct)) / 100n
-  if (ethShare < MIN_DISTRIBUTE && tokShare === 0n) {
+  if (ethShare < MIN_DISTRIBUTE) {
     console.log(`[${l.symbol || l.id}] round ${next.round} due but vault too thin (${formatEther(ethShare)} ETH), waiting`)
     return
   }
@@ -88,9 +92,8 @@ async function processHolders (l, wallet) {
   })
   if (holders.length === 0) { console.log(`[${l.symbol || l.id}] no holders in range, skipping`); return }
 
-  console.log(`[${l.symbol || l.id}] round ${next.round}: ${formatEther(ethShare)} ETH + ${formatEther(tokShare)} tokens -> ${holders.length} holders (#${cfg.holderFrom}-#${cfg.holderTo})`)
+  console.log(`[${l.symbol || l.id}] round ${next.round}: ${formatEther(ethShare)} ETH -> ${holders.length} holders (#${cfg.holderFrom}-#${cfg.holderTo})`)
   const ethRes = await airdropEth(wallet, holders, ethShare)
-  const tokRes = await airdropToken(wallet, l.token, holders, tokShare)
 
   if (!DRY_RUN) {
     await api(`/api/admin/launches/${l.id}`, {
@@ -104,9 +107,8 @@ async function processHolders (l, wallet) {
           trigger: cfg.trigger === 'mcap' ? { capUsd: next.capUsd, capNow } : { afterHours: next.afterHours },
           holders: holders.length,
           ethWei: ethShare.toString(),
-          tokenWei: tokShare.toString(),
           perHolderEthWei: ethRes.perWei || '0',
-          txCount: (ethRes.txs?.length || 0) + (tokRes.txs?.length || 0),
+          txCount: ethRes.txs?.length || 0,
         },
       }),
     })
@@ -117,29 +119,32 @@ async function processSplit (l, wallet) {
   const b = await vaultBalances(l.feeWallet, l.token)
   await unwrapWeth(wallet, b.weth)
   const eth = distributableEth(DRY_RUN ? b.eth + b.weth : (await vaultBalances(l.feeWallet, l.token)).eth)
-  if (eth < MIN_DISTRIBUTE && b.token === 0n) return
-  console.log(`[${l.symbol || l.id}] split: ${formatEther(eth)} ETH + ${formatEther(b.token)} tokens across ${l.splitConfig.length} wallets`)
-  const txs = await splitFunds(wallet, l.token, l.splitConfig, eth, b.token)
+  if (eth < MIN_DISTRIBUTE) return
+  console.log(`[${l.symbol || l.id}] split: ${formatEther(eth)} ETH across ${l.splitConfig.length} wallets`)
+  const txs = await splitFunds(wallet, l.splitConfig, eth)
   if (!DRY_RUN && txs.length) {
     await api(`/api/admin/launches/${l.id}`, {
       method: 'PATCH',
       body: JSON.stringify({
-        recordDistribution: { at: new Date().toISOString(), kind: 'split', ethWei: eth.toString(), tokenWei: b.token.toString(), txCount: txs.length },
+        recordDistribution: { at: new Date().toISOString(), kind: 'split', ethWei: eth.toString(), txCount: txs.length },
       }),
     })
   }
 }
 
 async function processBurn (l, wallet) {
+  // Buyback and burn uses only the ETH-side fees to market-buy the token and
+  // send what it buys to the dead address. The token-side fees in the vault
+  // are left where they are; we never move the launch supply directly.
   const b = await vaultBalances(l.feeWallet, l.token)
-  if (b.weth < MIN_DISTRIBUTE && b.token === 0n) return
-  console.log(`[${l.symbol || l.id}] buyback and burn: ${formatEther(b.weth)} WETH + ${formatEther(b.token)} tokens`)
-  const txs = await buybackAndBurn(wallet, l.token, b.weth, b.token)
+  if (b.weth < MIN_DISTRIBUTE) return
+  console.log(`[${l.symbol || l.id}] buyback and burn: ${formatEther(b.weth)} WETH`)
+  const txs = await buybackAndBurn(wallet, l.token, b.weth)
   if (!DRY_RUN && txs.length) {
     await api(`/api/admin/launches/${l.id}`, {
       method: 'PATCH',
       body: JSON.stringify({
-        recordDistribution: { at: new Date().toISOString(), kind: 'burn', wethWei: b.weth.toString(), tokenWei: b.token.toString(), txCount: txs.length },
+        recordDistribution: { at: new Date().toISOString(), kind: 'burn', wethWei: b.weth.toString(), txCount: txs.length },
       }),
     })
   }
@@ -149,9 +154,7 @@ async function processCharity (l, wallet) {
   const to = l.charityConfig?.address
   if (!to) { console.error(`[${l.symbol || l.id}] charity mode without an address, skipping`); return }
   const b = await vaultBalances(l.feeWallet, l.token)
-  if (b.token > 0n) await sellTokenForWeth(wallet, l.token, b.token)
-  const wethNow = DRY_RUN ? b.weth : (await vaultBalances(l.feeWallet, l.token)).weth
-  await unwrapWeth(wallet, wethNow)
+  await unwrapWeth(wallet, b.weth)
   const eth = distributableEth(DRY_RUN ? b.eth + b.weth : (await vaultBalances(l.feeWallet, l.token)).eth)
   if (eth < MIN_DISTRIBUTE) return
   console.log(`[${l.symbol || l.id}] donating ${formatEther(eth)} ETH to ${l.charityConfig.name} (${to})`)
