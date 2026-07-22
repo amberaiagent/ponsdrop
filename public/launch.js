@@ -47,6 +47,14 @@ const LAUNCH_ABI = [{
 
 const TOKEN_LAUNCHED = parseAbiItem('event TokenLaunched(address indexed token, address indexed deployer, address indexed dexFactory, address pairToken, address pool, uint256 dexId, uint256 launchConfigId, uint256 positionId, uint256 restrictionsEndBlock, uint256 initialBuyAmount)')
 
+const SET_FEE_REDIRECT_ABI = [{
+  type: 'function',
+  name: 'setFeeRedirect',
+  stateMutability: 'nonpayable',
+  inputs: [{ name: 'token', type: 'address' }, { name: 'newFeeWallet', type: 'address' }],
+  outputs: [],
+}]
+
 // ---- prefill from the landing quick-start card -------------------------
 {
   const q = new URLSearchParams(location.search)
@@ -106,19 +114,15 @@ $$('#modes .mode').forEach(el => el.addEventListener('click', () => {
   if (mode === 'holders') drawPreview()
 }))
 
-// pons routes the initial buy to feeWallet. For managed modes feeWallet is the
-// vault, so a dev buy would go to the vault instead of the dev. Disable it and
-// explain; devs buy from their own wallet after launch.
+// The dev buy always goes to the dev: we launch with feeWallet = the dev's
+// own wallet (so the initial buy lands with them), then redirect fees to the
+// vault in a second step. The note explains the extra signature.
 function syncDevBuy () {
-  const input = $('#f-devbuy')
   const note = $('#devbuy-note')
-  const managed = mode !== 'default'
-  input.disabled = managed
-  if (managed) input.value = ''
-  input.style.opacity = managed ? '0.5' : '1'
-  if (note) note.textContent = managed
-    ? 'Disabled for this fee mode: pons sends the dev buy to the fee vault, not to you. Buy from your own wallet right after launch instead.'
-    : 'Sent on top of the launch fee. Max wallet is 5% of supply.'
+  if (!note) return
+  note.textContent = mode === 'default'
+    ? 'Sent on top of the launch fee. Max wallet is 5% of supply. Goes to your wallet.'
+    : 'Sent on top of the launch fee, goes to your wallet. After launch you sign one more transaction to route the fees to the vault.'
 }
 syncDevBuy()
 
@@ -283,7 +287,11 @@ $('#launch').addEventListener('click', async () => {
       }),
     }).then(r => r.json())
     if (prep.error) throw new Error(prep.error)
-    const feeWallet = prep.feeWallet || account
+    // Launch with the dev's own wallet as feeWallet so the dev buy lands with
+    // the dev. For managed modes the vault becomes the fee redirect target,
+    // set in a second transaction right after launch.
+    const vaultAddress = mode === 'default' ? null : prep.feeWallet
+    const feeWallet = account
 
     const params = {
       name,
@@ -300,10 +308,7 @@ $('#launch').addEventListener('click', async () => {
       feeWallet,
     }
     const salt = '0x' + [...crypto.getRandomValues(new Uint8Array(32))].map(b => b.toString(16).padStart(2, '0')).join('')
-    // pons sends the initial buy to feeWallet. In managed modes that is the
-    // vault, so a dev buy would land in the vault, not with the dev. We force
-    // it off here; the dev buys from their own wallet after launch instead.
-    const devBuy = mode === 'default' ? Number($('#f-devbuy').value || 0) : 0
+    const devBuy = Number($('#f-devbuy').value || 0)
     const value = parseEther(cfg.launchFeeEth || '0.0005') + parseEther(String(devBuy || 0))
 
     status.textContent = 'Confirm in your wallet...'
@@ -333,6 +338,24 @@ $('#launch').addEventListener('click', async () => {
       } catch { /* not our event */ }
     }
     if (token) {
+      // Managed modes: route the fees to the vault now. The dev buy already
+      // landed with the dev; only future fees are redirected.
+      if (vaultAddress) {
+        status.textContent = 'Confirm fee routing to the vault...'
+        try {
+          const rhash = await wallet.writeContract({
+            address: cfg.locker,
+            abi: SET_FEE_REDIRECT_ABI,
+            functionName: 'setFeeRedirect',
+            args: [token, vaultAddress],
+          })
+          await pub.waitForTransactionReceipt({ hash: rhash, timeout: 180_000 })
+          toast('Fees now route to the vault')
+        } catch (e) {
+          toast('Launched, but fee routing failed: sign setFeeRedirect from /token to finish')
+          console.error(e)
+        }
+      }
       await fetch('/api/launch/confirm', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },

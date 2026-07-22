@@ -28,20 +28,22 @@ This is the PonsDrop part. Five options, one choice, set forever at launch:
 
 See [Fee modes](fee-modes.md) for the details of each.
 
-## 4. Sign the transaction
+## 4. Sign the transaction(s)
 
-Hit **Launch token**. For managed modes PonsDrop first reserves a fee vault (an address you will see in the wallet prompt as the `feeWallet` parameter), then your wallet signs `launchToken()` on the factory:
+Hit **Launch token**. Your wallet signs `launchToken()` on the factory with **your own wallet** as `feeWallet`:
 
 ```
 launchToken(
-  { name, symbol, logo, description, socials, feeWallet },
+  { name, symbol, logo, description, socials, feeWallet: you },
   launchConfigId: 0,
   dexId: 0,
   salt
 )
 ```
 
-Value = 0.0005 ETH launch fee + your dev buy.
+Value = 0.0005 ETH launch fee + your dev buy. Because `feeWallet` is your wallet, **the dev buy lands with you**, exactly like a normal pons launch.
+
+For managed modes there is one more signature: `setFeeRedirect(token, vault)` on the locker, which routes future trading fees to the PonsDrop vault. Only the deployer can call it, so you sign it. From that point fees flow to the vault while your dev buy stays yours. "Keep it" mode skips this step entirely.
 
 ## 5. Done
 
